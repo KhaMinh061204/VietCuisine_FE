@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <application
+        android:name=".VietCuisineApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.VietCuisine"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        
+        <!-- Splash Activity -->
+        <activity
+            android:name=".ui.splash.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.VietCuisine.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <!-- Main Activity -->
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VietCuisine.NoActionBar" />
+            
+        <!-- Auth Activities -->
+        <activity
+            android:name=".ui.auth.LoginActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VietCuisine.NoActionBar" />
+            
+        <activity
+            android:name=".ui.auth.RegisterActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VietCuisine.NoActionBar" />
+            
+        <activity
+            android:name=".ui.auth.ForgotPasswordActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VietCuisine.NoActionBar" />
+            
+        <!-- Recipe Detail Activity -->
+        <activity
+            android:name=".ui.recipe.RecipeDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VietCuisine.NoActionBar" />
+            
+        <!-- Post Detail Activity -->
+        <activity
+            android:name=".ui.post.PostDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VietCuisine.NoActionBar" />
+            
+        <!-- Chat Activity -->
+        <activity
+            android:name=".ui.message.ChatActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VietCuisine.NoActionBar" />
+            
+        <!-- Create Recipe Activity -->
+        <activity
+            android:name=".ui.recipe.CreateRecipeActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VietCuisine.NoActionBar" />
+            
+        <!-- Create Post Activity -->
+        <activity
+            android:name=".ui.post.CreatePostActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VietCuisine.NoActionBar" />
+            
+        <!-- Create Reel Activity -->
+        <activity
+            android:name=".ui.reel.CreateReelActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VietCuisine.NoActionBar" />
+            
+        <!-- Profile Activity -->
+        <activity
+            android:name=".ui.profile.ProfileActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VietCuisine.NoActionBar" />
+            
+        <!-- Order Activity -->
+        <activity
+            android:name=".ui.order.OrderActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VietCuisine.NoActionBar" />
+
+    </application>
+
+</manifest>

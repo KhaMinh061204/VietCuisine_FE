@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:gravity="center_vertical">
+
+    <EditText
+        android:id="@+id/ingredientInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="Enter ingredient (e.g., 2 cups flour)"
+        android:background="@android:drawable/edit_text"
+        android:padding="12dp"
+        android:layout_marginEnd="8dp" />
+
+    <ImageButton
+        android:id="@+id/removeIngredientButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_remove"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Remove ingredient"
+        android:padding="8dp" />
+
+</LinearLayout>
