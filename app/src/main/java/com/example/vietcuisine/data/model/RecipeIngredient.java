@@ -4,14 +4,14 @@ public class RecipeIngredient {
     private String _id;
     private String ingredientId;
     private String ingredientName;
-    private double quantity;
+    private String quantity;
     private String unit;
     private String recipeId;
 
     // Constructors
     public RecipeIngredient() {}
 
-    public RecipeIngredient(String ingredientName, double quantity, String unit) {
+    public RecipeIngredient(String ingredientName, String quantity, String unit) {
         this.ingredientName = ingredientName;
         this.quantity = quantity;
         this.unit = unit;
@@ -27,8 +27,8 @@ public class RecipeIngredient {
     public String getIngredientName() { return ingredientName; }
     public void setIngredientName(String ingredientName) { this.ingredientName = ingredientName; }
 
-    public double getQuantity() { return quantity; }
-    public void setQuantity(double quantity) { this.quantity = quantity; }
+    public String getQuantity() { return quantity; }
+    public void setQuantity(String quantity) { this.quantity = quantity; }
 
     public String getUnit() { return unit; }
     public void setUnit(String unit) { this.unit = unit; }

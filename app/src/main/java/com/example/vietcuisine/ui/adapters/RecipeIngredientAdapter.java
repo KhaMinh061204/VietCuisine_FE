@@ -28,20 +28,21 @@ public class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredie
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         RecipeIngredient ingredient = ingredients.get(position);
-        
-        holder.ingredientName.setText(ingredient.getIngredientName() != null ? 
-            ingredient.getIngredientName() : "Nguyên liệu");
-        
-        String quantity = "";
-        if (ingredient.getQuantity() > 0) {
-            quantity += ingredient.getQuantity();
-        }
-        if (ingredient.getUnit() != null && !ingredient.getUnit().isEmpty()) {
-            quantity += " " + ingredient.getUnit();
-        }
-        
-        holder.ingredientQuantity.setText(quantity.isEmpty() ? "Không xác định" : quantity);
+
+        // Hiển thị tên nguyên liệu
+        holder.ingredientName.setText(
+                ingredient.getIngredientName() != null && !ingredient.getIngredientName().isEmpty()
+                        ? ingredient.getIngredientName()
+                        : "Nguyên liệu"
+        );
+
+        // Hiển thị số lượng (đã bao gồm đơn vị)
+        String quantity = ingredient.getQuantity();
+        holder.ingredientQuantity.setText(
+                quantity != null && !quantity.isEmpty() ? quantity : "Không xác định"
+        );
     }
+
 
     @Override
     public int getItemCount() {
