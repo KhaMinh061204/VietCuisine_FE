@@ -48,4 +48,35 @@ public class ApiClient {
         }
         return retrofit;
     }
+
+    /**
+     * Get the base URL for API requests
+     * @return The base URL string
+     */
+    public static String getBaseUrl() {
+        return BASE_URL;
+    }
+
+    /**
+     * Helper method to construct proper image URLs
+     * @param imagePath The image path from the API response
+     * @return The complete image URL
+     */
+    public static String getImageUrl(String imagePath) {
+        if (imagePath == null || imagePath.isEmpty()) {
+            return "";
+        }
+        
+        // If imagePath already starts with http, return as is
+        if (imagePath.startsWith("http")) {
+            return imagePath;
+        }
+        
+        // If imagePath starts with /, remove BASE_URL trailing slash to avoid double slash
+        if (imagePath.startsWith("/")) {
+            return BASE_URL.replaceAll("/$", "") + imagePath;
+        } else {
+            return BASE_URL + imagePath;
+        }
+    }
 }

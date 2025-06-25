@@ -136,7 +136,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
         
         // Load recipe image
         if (recipe.getImage() != null && !recipe.getImage().isEmpty()) {
-            String imageUrl = ApiClient.getBaseUrl() + recipe.getImage();
+            String imageUrl = ApiClient.getImageUrl(recipe.getImage());
+            Log.d(TAG, "Loading image from URL: " + imageUrl);
             Glide.with(this)
                 .load(imageUrl)
                 .placeholder(R.drawable.ic_avatar_placeholder)
