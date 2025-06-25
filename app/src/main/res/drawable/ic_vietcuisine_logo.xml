@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="60dp"
+    android:viewportWidth="200"
+    android:viewportHeight="60">
+
+    <!-- Background with rounded corners -->
+    <path
+        android:fillColor="@color/primary_color"
+        android:pathData="M10,0 L190,0 Q200,0 200,10 L200,50 Q200,60 190,60 L10,60 Q0,60 0,50 L0,10 Q0,0 10,0 Z" />
+
+    <!-- Chef hat icon -->
+    <group android:translateX="15" android:translateY="15">
+        <!-- Hat base -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M0,15 Q0,13 2,13 L16,13 Q18,13 18,15 L18,18 Q18,20 16,20 L2,20 Q0,20 0,18 Z" />
+        <!-- Hat top -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M9,2 Q6,2 6,6 Q6,10 9,10 Q12,10 12,6 Q12,2 9,2 Z" />
+        <!-- Hat decorations -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M3,8 Q2,8 2,9 Q2,10 3,10 Q4,10 4,9 Q4,8 3,8 Z" />
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M15,7 Q14,7 14,8 Q14,9 15,9 Q16,9 16,8 Q16,7 15,7 Z" />
+    </group>
+
+    <!-- "Viet" text -->
+    <group android:translateX="45" android:translateY="20">
+        <!-- V -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M0,0 L2,0 L5,15 L8,0 L10,0 L6,20 L4,20 Z" />
+        <!-- i -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M13,5 L15,5 L15,20 L13,20 Z" />
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M13,0 L15,0 L15,2 L13,2 Z" />
+        <!-- e -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M18,8 Q18,6 20,6 Q22,6 22,8 L22,14 Q22,16 20,16 Q18,16 18,14 Z M18,10 L22,10" />
+        <!-- t -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M25,2 L27,2 L27,20 L25,20 Z M23,8 L29,8" />
+    </group>
+
+    <!-- "Cuisine" text -->
+    <group android:translateX="85" android:translateY="20">
+        <!-- C -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M0,6 Q0,4 2,4 Q4,4 4,6 L2,6 L2,14 L4,14 Q4,16 2,16 Q0,16 0,14 Z" />
+        <!-- u -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M7,6 L9,6 L9,14 Q9,16 11,16 Q13,16 13,14 L13,6 L15,6 L15,14 Q15,18 11,18 Q7,18 7,14 Z" />
+        <!-- i -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M18,6 L20,6 L20,18 L18,18 Z" />
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M18,2 L20,2 L20,4 L18,4 Z" />
+        <!-- s -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M23,8 Q23,6 25,6 Q27,6 27,8 L27,10 L25,10 L25,8 L25,10 Q25,12 27,12 Q29,12 29,14 L29,16 Q29,18 27,18 Q25,18 25,16 L27,16 L27,14 L25,14 Z" />
+        <!-- i -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M32,6 L34,6 L34,18 L32,18 Z" />
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M32,2 L34,2 L34,4 L32,4 Z" />
+        <!-- n -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M37,6 L39,6 L39,10 Q39,8 41,8 Q43,8 43,10 L43,18 L41,18 L41,10 L39,10 L39,18 L37,18 Z" />
+        <!-- e -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M46,8 Q46,6 48,6 Q50,6 50,8 L50,14 Q50,16 48,16 Q46,16 46,14 Z M46,10 L50,10" />
+    </group>
+
+    <!-- Bowl icon -->
+    <group android:translateX="160" android:translateY="25">
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M2,6 Q2,12 8,12 Q14,12 14,6 L14,4 L2,4 Z" />
+        <!-- Chopsticks -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M6,0 L7,4 L8,4 L7,0 Z" />
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M9,0 L10,4 L11,4 L10,0 Z" />
+    </group>
+
+    <!-- Decorative dots -->
+    <group android:translateX="175" android:translateY="15">
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M0,0 Q0,-1 1,-1 Q2,-1 2,0 Q2,1 1,1 Q0,1 0,0 Z" />
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M5,8 Q5,7 6,7 Q7,7 7,8 Q7,9 6,9 Q5,9 5,8 Z" />
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M2,15 Q2,14 3,14 Q4,14 4,15 Q4,16 3,16 Q2,16 2,15 Z" />
+    </group>
+
+</vector>

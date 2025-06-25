@@ -24,6 +24,7 @@ import com.example.vietcuisine.R;
 import com.example.vietcuisine.data.network.ApiClient;
 import com.example.vietcuisine.data.network.ApiService;
 import com.example.vietcuisine.data.model.Category;
+import com.example.vietcuisine.data.model.CategoryResponse;
 import com.example.vietcuisine.data.model.ApiResponse;
 import com.example.vietcuisine.ui.adapters.StepAdapter;
 import com.example.vietcuisine.ui.adapters.IngredientInputAdapter;
@@ -135,15 +136,14 @@ public class CreateRecipeActivity extends AppCompatActivity {
         // Show loading indicator and disable category input
         categoryInput.setEnabled(false);
         categoryInput.setText("Đang tải danh mục...");
-        
-        apiService.getAllCategories().enqueue(new Callback<List<Category>>() {
+          apiService.getAllCategories().enqueue(new Callback<CategoryResponse>() {
             @Override
-            public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+            public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Category> categoryList = response.body();
-                    if (categoryList != null && !categoryList.isEmpty()) {
+                    CategoryResponse categoryResponse = response.body();
+                    if (categoryResponse.getCategories() != null && !categoryResponse.getCategories().isEmpty()) {
                         categories.clear();
-                        categories.addAll(categoryList);
+                        categories.addAll(categoryResponse.getCategories());
                         setupCategoryDropdown();
                     } else {
                         showCategoryLoadError("Không có danh mục nào");
@@ -154,7 +154,7 @@ public class CreateRecipeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Category>> call, Throwable t) {
+            public void onFailure(Call<CategoryResponse> call, Throwable t) {
                 showCategoryLoadError("Lỗi kết nối: " + t.getMessage());
             }
         });

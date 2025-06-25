@@ -34,31 +34,29 @@ public interface ApiService {
     
     @POST("auth/reset-password")
     Call<ApiResponse> resetPassword(@Body ResetPasswordRequest request);
-    
-    // Recipe endpoints
-    @GET("recipes")
+      // Recipe endpoints
+    @GET("recipe")
     Call<RecipeResponse> getRecipesInHomepage();
     
-    @GET("recipes/all")
+    @GET("recipe/all")
     Call<RecipeResponse> getAllRecipes();
     
-    @GET("recipes/my")
+    @GET("recipe/my")
     Call<RecipeResponse> getMyRecipes();
     
-    @GET("recipes/savedRecipes")
+    @GET("recipe/savedRecipes")
     Call<RecipeResponse> getSavedRecipes();
-    
-    @GET("recipes/category/{categoryId}")
+      @GET("recipe/category/{categoryId}")
     Call<RecipeResponse> getRecipesByCategory(@Path("categoryId") String categoryId);
     
-    @GET("recipes/search")
+    @GET("recipe/search")
     Call<RecipeResponse> searchRecipes(@Query("q") String query);
     
-    @GET("recipes/{id}")
+    @GET("recipe/{id}")
     Call<RecipeDetailResponse> getRecipeById(@Path("id") String id);
     
     @Multipart
-    @POST("recipes/add")
+    @POST("recipe/add")
     Call<ApiResponse> addRecipe(
         @Part("title") RequestBody title,
         @Part("description") RequestBody description,
@@ -74,30 +72,31 @@ public interface ApiService {
         @Part MultipartBody.Part image
     );
     
-    @PUT("recipes/{id}")
+    @PUT("recipe/{id}")
     Call<ApiResponse> updateRecipe(@Path("id") String id, @Body UpdateRecipeRequest request);
     
-    @DELETE("recipes/{id}")
+    @DELETE("recipe/{id}")
     Call<ApiResponse> deleteRecipe(@Path("id") String id);
     
-    @POST("recipes/{id}/toggle-like")
+    @POST("recipe/{id}/toggle-like")
     Call<ApiResponse> toggleLikeRecipe(@Path("id") String id);
     
-    @POST("recipes/{id}/toggle-save")
+    @POST("recipe/{id}/toggle-save")
     Call<ApiResponse> toggleSaveRecipe(@Path("id") String id);
     
-    @POST("recipes/{id}/comments")
+    @POST("recipe/{id}/comments")
     Call<ApiResponse> addRecipeComment(@Path("id") String id, @Body CommentRequest request);
     
-    @DELETE("recipes/{id}/comments/{commentId}")
+    @DELETE("recipe/{id}/comments/{commentId}")
     Call<ApiResponse> deleteRecipeComment(@Path("id") String recipeId, @Path("commentId") String commentId);
-      // Category endpoints
-    @GET("categories/all")
-    Call<List<Category>> getAllCategories();
-    
+
+    // Category endpoints
+    @GET("category/all")
+    Call<CategoryResponse> getAllCategories();
+
     // Post endpoints
     @GET("posts")
-    Call<PostResponse> getAllPosts();
+    Call<List<Post>> getAllPosts();
     
     @GET("posts/my")
     Call<PostResponse> getMyPosts();
@@ -122,67 +121,65 @@ public interface ApiService {
     
     @DELETE("posts/{id}")
     Call<ApiResponse> deletePost(@Path("id") String id);
-    
-    // Reel endpoints
-    @GET("reels/all")
+      // Reel endpoints
+    @GET("reel/all")
     Call<ReelResponse> getAllReels();
     
     @Multipart
-    @POST("reels/add")
+    @POST("reel/add")
     Call<ApiResponse> addReel(
         @Part("caption") RequestBody caption,
         @Part MultipartBody.Part video
     );
     
     @Multipart
-    @PUT("reels/{id}")
+    @PUT("reel/{id}")
     Call<ApiResponse> updateReel(
         @Path("id") String id,
         @Part("caption") RequestBody caption,
         @Part MultipartBody.Part video
     );
     
-    @DELETE("reels/{id}")
+    @DELETE("reel/{id}")
     Call<ApiResponse> deleteReel(@Path("id") String id);
     
     // Like endpoints
-    @POST("likes")
+    @POST("like")
     Call<ApiResponse> toggleLike(@Body LikeRequest request);
     
-    @GET("likes")
+    @GET("like")
     Call<LikeResponse> getLikes(@Query("targetId") String targetId, @Query("onModel") String onModel);
     
     // Comment endpoints
-    @POST("comments")
+    @POST("comment")
     Call<ApiResponse> createComment(@Body CommentRequest request);
     
-    @GET("comments")
+    @GET("comment")
     Call<CommentResponse> getComments(@Query("targetId") String targetId, @Query("onModel") String onModel);
     
-    @DELETE("comments/{id}")
+    @DELETE("comment/{id}")
     Call<ApiResponse> deleteComment(@Path("id") String id);
     
     // Ingredient endpoints
-    @GET("ingredients/all")
+    @GET("ingredient/all")
     Call<IngredientResponse> getAllIngredients();
     
-    @GET("ingredients/search")
+    @GET("ingredient/search")
     Call<IngredientResponse> searchIngredients(@Query("q") String query);
     
-    @GET("ingredients/{id}")
+    @GET("ingredient/{id}")
     Call<IngredientDetailResponse> getIngredientById(@Path("id") String id);
-    
-    // Ingredient Order endpoints
-    @POST("ingredient-orders")
+      // Ingredient Order endpoints
+    @POST("order")
     Call<ApiResponse> createOrder(@Body OrderRequest request);
     
-    @GET("ingredient-orders/my")
+    @GET("order/my")
     Call<OrderResponse> getMyOrders();
     
-    @GET("ingredient-orders/{id}")
+    @GET("order/{id}")
     Call<OrderDetailResponse> getOrderById(@Path("id") String id);
     
-    @POST("ingredient-orders/payment")
+    @POST("order/payment")
     Call<PaymentResponse> processPayment(@Body PaymentRequest request);
     
     // Message endpoints

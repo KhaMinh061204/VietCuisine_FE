@@ -2,6 +2,7 @@ package com.example.vietcuisine.ui.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,6 @@ import com.example.vietcuisine.data.model.Recipe;
 import com.example.vietcuisine.data.model.Post;
 import com.example.vietcuisine.data.model.Category;
 import com.example.vietcuisine.data.model.RecipeResponse;
-import com.example.vietcuisine.data.model.PostResponse;
 import com.example.vietcuisine.data.model.CategoryResponse;
 import com.example.vietcuisine.data.model.LikeRequest;
 import com.example.vietcuisine.data.model.ApiResponse;
@@ -43,6 +43,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements PostAdapter.OnPostInteractionListener {
+
+    private static final String TAG = "HomeFragment";
 
     private RecyclerView categoriesRecyclerView, featuredRecipesRecyclerView, postsRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -100,8 +102,7 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
 
     private void setupClickListeners() {
         swipeRefreshLayout.setOnRefreshListener(this::loadData);
-        
-        fabAddPost.setOnClickListener(v -> {
+          fabAddPost.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), CreateRecipeActivity.class);
             startActivity(intent);
         });
@@ -112,58 +113,85 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
         loadCategories();
         loadFeaturedRecipes();
         loadPosts();
-    }    private void loadCategories() {
-        apiService.getAllCategories().enqueue(new Callback<List<Category>>() {
-            @Override
-            public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    categories.clear();
-                    categories.addAll(response.body());
-                    categoryAdapter.notifyDataSetChanged();
-                }
-            }
+    }
 
+    private void loadCategories() {
+        // Backend returns { categories: [...] } directly, matching CategoryResponse structure
+        apiService.getAllCategories().enqueue(new Callback<CategoryResponse>() {
             @Override
-            public void onFailure(Call<List<Category>> call, Throwable t) {
+            public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    CategoryResponse categoryResponse = response.body();
+                    if (categoryResponse.getCategories() != null && !categoryResponse.getCategories().isEmpty()) {
+                        categories.clear();
+                        categories.addAll(categoryResponse.getCategories());
+                        categoryAdapter.notifyDataSetChanged();
+                        Log.d(TAG, "Categories loaded: " + categories.size());
+                    } else {
+                        showError("Không có danh mục nào");
+                        Log.w(TAG, "No categories found in response");
+                    }
+                } else {
+                    showError("Lỗi tải danh mục: " + response.code());
+                    Log.e(TAG, "Categories request failed: " + response.code());
+                }
+            }            @Override
+            public void onFailure(Call<CategoryResponse> call, Throwable t) {
                 showError("Lỗi tải danh mục: " + t.getMessage());
+                Log.e(TAG, "Categories request failed", t);
             }
         });
     }
 
     private void loadFeaturedRecipes() {
+        // Backend returns { recipes: [...] } directly, so we use RecipeResponse
         apiService.getRecipesInHomepage().enqueue(new Callback<RecipeResponse>() {
             @Override
             public void onResponse(Call<RecipeResponse> call, Response<RecipeResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    featuredRecipes.clear();
-                    featuredRecipes.addAll(response.body().getRecipes());
-                    recipeAdapter.notifyDataSetChanged();
+                    RecipeResponse recipeResponse = response.body();
+                    if (recipeResponse.getRecipes() != null && !recipeResponse.getRecipes().isEmpty()) {
+                        featuredRecipes.clear();
+                        featuredRecipes.addAll(recipeResponse.getRecipes());
+                        recipeAdapter.notifyDataSetChanged();
+                        Log.d(TAG, "Featured recipes loaded: " + featuredRecipes.size());
+                    } else {
+                        Log.w(TAG, "No featured recipes found");
+                    }
+                } else {
+                    showError("Lỗi tải công thức: " + response.code());
+                    Log.e(TAG, "Featured recipes request failed: " + response.code());
                 }
-            }
-
-            @Override
+            }            @Override
             public void onFailure(Call<RecipeResponse> call, Throwable t) {
                 showError("Lỗi tải công thức: " + t.getMessage());
+                Log.e(TAG, "Featured recipes request failed", t);
             }
         });
     }
 
     private void loadPosts() {
-        apiService.getAllPosts().enqueue(new Callback<PostResponse>() {
+        // Backend returns posts array directly 
+        apiService.getAllPosts().enqueue(new Callback<List<Post>>() {
             @Override
-            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 swipeRefreshLayout.setRefreshing(false);
                 if (response.isSuccessful() && response.body() != null) {
                     posts.clear();
-                    posts.addAll(response.body().getPosts());
+                    posts.addAll(response.body());
                     postAdapter.notifyDataSetChanged();
+                    Log.d(TAG, "Posts loaded: " + posts.size());
+                } else {
+                    showError("Lỗi tải bài viết: " + response.code());
+                    Log.e(TAG, "Posts request failed: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<PostResponse> call, Throwable t) {
+            public void onFailure(Call<List<Post>> call, Throwable t) {
                 swipeRefreshLayout.setRefreshing(false);
                 showError("Lỗi tải bài viết: " + t.getMessage());
+                Log.e(TAG, "Posts request failed", t);
             }
         });
     }
