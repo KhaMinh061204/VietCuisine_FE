@@ -1,35 +1,46 @@
 package com.example.vietcuisine.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeDetailResponse {
-    private boolean success;
-    private String message;
-    private Recipe data;
+    @SerializedName("status")
+    private boolean status;
 
-    public RecipeDetailResponse() {}
+    @SerializedName("message")
+    private String message;
+
+    @SerializedName("recipes")
+    private List<Recipe> recipes;
 
     public boolean isSuccess() {
-        return success;
+        return status;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
+    public Recipe getData() {
+        return recipes != null && !recipes.isEmpty() ? recipes.get(0) : null;
     }
 
     public String getMessage() {
         return message;
     }
 
+    public RecipeDetailResponse() {}
+
+    public void setSuccess(boolean success) {
+        this.status = success;
+    }
+
+
     public void setMessage(String message) {
         this.message = message;
     }
 
-    public Recipe getData() {
-        return data;
-    }
 
-    public void setData(Recipe data) {
-        this.data = data;
+    public void setData(Recipe recipe) {
+        this.recipes = new ArrayList<>();
+        this.recipes.add(recipe);
     }
 }

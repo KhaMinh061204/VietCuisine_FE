@@ -1,4 +1,5 @@
 package com.example.vietcuisine.ui.recipe;
+import com.google.gson.Gson;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -49,7 +50,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         
         apiService = ApiClient.getClient().create(ApiService.class);
         recipeId = getIntent().getStringExtra("recipe_id");
-        
+        Log.d(TAG, "Loading image from URL11: " + recipeId);
         initViews();
         setupClickListeners();
         setupRecyclerViews();
@@ -101,6 +102,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
             public void onResponse(Call<RecipeDetailResponse> call, Response<RecipeDetailResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     RecipeDetailResponse recipeResponse = response.body();
+                    Log.d(TAG, "Response object: " + new Gson().toJson(recipeResponse));
                     if (recipeResponse.isSuccess() && recipeResponse.getData() != null) {
                         recipe = recipeResponse.getData();
                         displayRecipeData();
@@ -110,7 +112,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
                         Log.w(TAG, "Recipe data is null or unsuccessful");
                     }
                 } else {
-                    showError("Lỗi tải công thức: " + response.code());
+                    showError("Lỗi tải công thức:" + response.code());
                     Log.e(TAG, "Recipe request failed: " + response.code());
                 }
             }
