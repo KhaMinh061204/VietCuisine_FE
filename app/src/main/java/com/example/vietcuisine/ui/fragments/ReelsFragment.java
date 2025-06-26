@@ -47,8 +47,7 @@ public class ReelsFragment extends Fragment implements ReelAdapter.OnReelInterac
         
         initViews(view);
         setupViewPager();
-        setupClickListeners();
-        
+
         apiService = ApiClient.getClient().create(ApiService.class);
         
         loadReels();
@@ -58,7 +57,7 @@ public class ReelsFragment extends Fragment implements ReelAdapter.OnReelInterac
 
     private void initViews(View view) {
         reelsViewPager = view.findViewById(R.id.reelsViewPager);
-        fabAddReel = view.findViewById(R.id.fabAddReel);
+
     }
 
     private void setupViewPager() {
@@ -67,12 +66,6 @@ public class ReelsFragment extends Fragment implements ReelAdapter.OnReelInterac
         reelsViewPager.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
     }
 
-    private void setupClickListeners() {
-        fabAddReel.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), CreateReelActivity.class);
-            startActivity(intent);
-        });
-    }
 
     private void loadReels() {
         apiService.getAllReels().enqueue(new Callback<ReelResponse>() {

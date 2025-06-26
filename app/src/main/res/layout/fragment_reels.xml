@@ -262,15 +262,5 @@
         android:indeterminateTint="@android:color/white"
         android:visibility="gone" />
 
-    <!-- Add Reel FAB -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddReel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="80dp"
-        android:src="@drawable/ic_camera"
-        app:tint="@android:color/white"
-        app:backgroundTint="@color/primary_color" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

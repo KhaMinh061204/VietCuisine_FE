@@ -20,20 +20,16 @@ import com.example.vietcuisine.data.network.ApiClient;
 import com.example.vietcuisine.data.network.ApiService;
 import com.example.vietcuisine.data.model.Recipe;
 import com.example.vietcuisine.data.model.Post;
-import com.example.vietcuisine.data.model.Category;
 import com.example.vietcuisine.data.model.RecipeResponse;
-import com.example.vietcuisine.data.model.CategoryResponse;
 import com.example.vietcuisine.data.model.LikeRequest;
 import com.example.vietcuisine.data.model.ApiResponse;
 import com.example.vietcuisine.ui.adapters.RecipeAdapter;
 import com.example.vietcuisine.ui.adapters.PostAdapter;
-import com.example.vietcuisine.ui.adapters.CategoryAdapter;
 import com.example.vietcuisine.ui.recipe.CreateRecipeActivity;
 import com.example.vietcuisine.ui.recipe.RecipeDetailActivity;
 import com.example.vietcuisine.ui.recipe.RecipesByCategoryActivity;
 import com.example.vietcuisine.ui.posts.PostDetailActivity;
 import com.example.vietcuisine.ui.comments.CommentsActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,16 +42,13 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
 
     private static final String TAG = "HomeFragment";
 
-    private RecyclerView categoriesRecyclerView, featuredRecipesRecyclerView, postsRecyclerView;
+    private RecyclerView featuredRecipesRecyclerView, postsRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private FloatingActionButton fabAddPost;
     
-    private CategoryAdapter categoryAdapter;
     private RecipeAdapter recipeAdapter;
     private PostAdapter postAdapter;
     
     private ApiService apiService;
-    private List<Category> categories = new ArrayList<>();
     private List<Recipe> featuredRecipes = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
 
@@ -76,19 +69,12 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
     }
 
     private void initViews(View view) {
-        categoriesRecyclerView = view.findViewById(R.id.categoriesRecyclerView);
         featuredRecipesRecyclerView = view.findViewById(R.id.featuredRecipesRecyclerView);
         postsRecyclerView = view.findViewById(R.id.postsRecyclerView);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-        fabAddPost = view.findViewById(R.id.fabAddPost);
     }
 
     private void setupRecyclerViews() {
-        // Categories - Horizontal
-        categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        categoryAdapter = new CategoryAdapter(categories, this::onCategoryClick);
-        categoriesRecyclerView.setAdapter(categoryAdapter);
-
         // Featured Recipes - Horizontal
         featuredRecipesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recipeAdapter = new RecipeAdapter(featuredRecipes, this::onRecipeClick);
@@ -102,45 +88,12 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
 
     private void setupClickListeners() {
         swipeRefreshLayout.setOnRefreshListener(this::loadData);
-          fabAddPost.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), CreateRecipeActivity.class);
-            startActivity(intent);
-        });
     }
 
     private void loadData() {
         swipeRefreshLayout.setRefreshing(true);
-        loadCategories();
         loadFeaturedRecipes();
         loadPosts();
-    }
-
-    private void loadCategories() {
-        // Backend returns { categories: [...] } directly, matching CategoryResponse structure
-        apiService.getAllCategories().enqueue(new Callback<CategoryResponse>() {
-            @Override
-            public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    CategoryResponse categoryResponse = response.body();
-                    if (categoryResponse.getCategories() != null && !categoryResponse.getCategories().isEmpty()) {
-                        categories.clear();
-                        categories.addAll(categoryResponse.getCategories());
-                        categoryAdapter.notifyDataSetChanged();
-                        Log.d(TAG, "Categories loaded: " + categories.size());
-                    } else {
-                        showError("Không có danh mục nào");
-                        Log.w(TAG, "No categories found in response");
-                    }
-                } else {
-                    showError("Lỗi tải danh mục: " + response.code());
-                    Log.e(TAG, "Categories request failed: " + response.code());
-                }
-            }            @Override
-            public void onFailure(Call<CategoryResponse> call, Throwable t) {
-                showError("Lỗi tải danh mục: " + t.getMessage());
-                Log.e(TAG, "Categories request failed", t);
-            }
-        });
     }
 
     private void loadFeaturedRecipes() {
@@ -194,14 +147,6 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
                 Log.e(TAG, "Posts request failed", t);
             }
         });
-    }
-
-    private void onCategoryClick(Category category) {
-        // Navigate to recipes by category
-        Intent intent = new Intent(getContext(), RecipesByCategoryActivity.class);
-        intent.putExtra("category_id", category.getId());
-        intent.putExtra("category_name", category.getName());
-        startActivity(intent);
     }
 
     private void onRecipeClick(Recipe recipe) {

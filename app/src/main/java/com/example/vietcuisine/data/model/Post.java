@@ -2,7 +2,7 @@ package com.example.vietcuisine.data.model;
 
 public class Post {
     private String _id;
-    private String userId;
+    private User userId;
     private String caption;
     private String image;    private String recipeId;
     private int likesCount;
@@ -14,7 +14,7 @@ public class Post {
     // Constructors
     public Post() {}
 
-    public Post(String userId, String caption, String image, String recipeId) {
+    public Post(User userId, String caption, String image, String recipeId) {
         this.userId = userId;
         this.caption = caption;
         this.image = image;
@@ -25,8 +25,8 @@ public class Post {
     public String getId() { return _id; }
     public void setId(String id) { this._id = id; }
 
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
+    public User getUserId() { return userId; }
+    public void setUserId(User userId) { this.userId = userId; }
 
     public String getCaption() { return caption; }
     public void setCaption(String caption) { this.caption = caption; }
