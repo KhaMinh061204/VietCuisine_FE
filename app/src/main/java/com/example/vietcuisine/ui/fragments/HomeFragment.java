@@ -16,18 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.vietcuisine.R;
+import com.example.vietcuisine.data.model.LikeRequest;
 import com.example.vietcuisine.data.network.ApiClient;
 import com.example.vietcuisine.data.network.ApiService;
-import com.example.vietcuisine.data.model.Recipe;
 import com.example.vietcuisine.data.model.Post;
-import com.example.vietcuisine.data.model.RecipeResponse;
-import com.example.vietcuisine.data.model.LikeRequest;
 import com.example.vietcuisine.data.model.ApiResponse;
-import com.example.vietcuisine.ui.adapters.RecipeAdapter;
 import com.example.vietcuisine.ui.adapters.PostAdapter;
-import com.example.vietcuisine.ui.recipe.CreateRecipeActivity;
-import com.example.vietcuisine.ui.recipe.RecipeDetailActivity;
-import com.example.vietcuisine.ui.recipe.RecipesByCategoryActivity;
 import com.example.vietcuisine.ui.posts.PostDetailActivity;
 import com.example.vietcuisine.ui.comments.CommentsActivity;
 
@@ -42,14 +36,10 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
 
     private static final String TAG = "HomeFragment";
 
-    private RecyclerView featuredRecipesRecyclerView, postsRecyclerView;
+    private RecyclerView postsRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    
-    private RecipeAdapter recipeAdapter;
     private PostAdapter postAdapter;
-    
     private ApiService apiService;
-    private List<Recipe> featuredRecipes = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
 
     @Nullable
@@ -69,17 +59,11 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
     }
 
     private void initViews(View view) {
-        featuredRecipesRecyclerView = view.findViewById(R.id.featuredRecipesRecyclerView);
         postsRecyclerView = view.findViewById(R.id.postsRecyclerView);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
     }
 
     private void setupRecyclerViews() {
-        // Featured Recipes - Horizontal
-        featuredRecipesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        recipeAdapter = new RecipeAdapter(featuredRecipes, this::onRecipeClick);
-        featuredRecipesRecyclerView.setAdapter(recipeAdapter);
-
         // Posts - Vertical
         postsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         postAdapter = new PostAdapter(posts, this);
@@ -92,35 +76,7 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
 
     private void loadData() {
         swipeRefreshLayout.setRefreshing(true);
-        loadFeaturedRecipes();
         loadPosts();
-    }
-
-    private void loadFeaturedRecipes() {
-        // Backend returns { recipes: [...] } directly, so we use RecipeResponse
-        apiService.getRecipesInHomepage().enqueue(new Callback<RecipeResponse>() {
-            @Override
-            public void onResponse(Call<RecipeResponse> call, Response<RecipeResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    RecipeResponse recipeResponse = response.body();
-                    if (recipeResponse.getRecipes() != null && !recipeResponse.getRecipes().isEmpty()) {
-                        featuredRecipes.clear();
-                        featuredRecipes.addAll(recipeResponse.getRecipes());
-                        recipeAdapter.notifyDataSetChanged();
-                        Log.d(TAG, "Featured recipes loaded: " + featuredRecipes.size());
-                    } else {
-                        Log.w(TAG, "No featured recipes found");
-                    }
-                } else {
-                    showError("Lỗi tải công thức: " + response.code());
-                    Log.e(TAG, "Featured recipes request failed: " + response.code());
-                }
-            }            @Override
-            public void onFailure(Call<RecipeResponse> call, Throwable t) {
-                showError("Lỗi tải công thức: " + t.getMessage());
-                Log.e(TAG, "Featured recipes request failed", t);
-            }
-        });
     }
 
     private void loadPosts() {
@@ -147,13 +103,6 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
                 Log.e(TAG, "Posts request failed", t);
             }
         });
-    }
-
-    private void onRecipeClick(Recipe recipe) {
-        // Navigate to recipe details
-        Intent intent = new Intent(getContext(), RecipeDetailActivity.class);
-        intent.putExtra("recipe_id", recipe.getId());
-        startActivity(intent);
     }
 
     @Override
