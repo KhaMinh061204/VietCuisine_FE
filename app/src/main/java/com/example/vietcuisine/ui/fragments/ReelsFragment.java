@@ -93,6 +93,7 @@ public class ReelsFragment extends Fragment implements ReelAdapter.OnReelInterac
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 if (response.isSuccessful()) {
                     // Update reel like status locally
+                    Log.d("ReelLike", "Reels like: " + response);
                     reel.setLiked(!reel.isLiked());
                     reel.setLikesCount(reel.isLiked() ? reel.getLikesCount() + 1 : reel.getLikesCount() - 1);
                     reelAdapter.notifyDataSetChanged();

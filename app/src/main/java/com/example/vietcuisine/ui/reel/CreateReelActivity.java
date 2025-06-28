@@ -7,11 +7,28 @@ import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.vietcuisine.R;
+import com.example.vietcuisine.data.model.ApiResponse;
+import com.example.vietcuisine.data.network.ApiClient;
+import com.example.vietcuisine.data.network.ApiService;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CreateReelActivity extends AppCompatActivity {
     
@@ -71,14 +88,82 @@ public class CreateReelActivity extends AppCompatActivity {
 
     private void uploadReel() {
         String caption = captionInput.getText().toString().trim();
-        
-        if (selectedVideoUri == null) {
-            selectVideoButton.setError("Vui lòng chọn video");
+
+        if (caption.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập caption", Toast.LENGTH_SHORT).show();
             return;
         }
-        
-        // TODO: Implement reel upload to server
-        // For now, just show success message
-        finish();
+
+        if (selectedVideoUri == null) {
+            Toast.makeText(this, "Vui lòng chọn video", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Lấy token từ SharedPreferences (đổi tên theo bạn lưu)
+        String token = getSharedPreferences("user_session", MODE_PRIVATE)
+                .getString("token", null);
+
+        if (token == null) {
+            Toast.makeText(this, "Bạn chưa đăng nhập", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Tạo phần caption
+        RequestBody captionPart = RequestBody.create(
+                caption, MediaType.parse("text/plain")
+        );
+
+        // Đọc video file
+        File videoFile;
+        try {
+            videoFile = getFileFromUri(selectedVideoUri);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Lỗi khi xử lý video: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Tạo MultipartBody cho video
+        RequestBody requestFile = RequestBody.create(videoFile, MediaType.parse("video/mp4"));
+        MultipartBody.Part videoPart = MultipartBody.Part.createFormData("video", videoFile.getName(), requestFile);
+
+        // Gọi API
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        apiService.addReel("Bearer " + token, captionPart, videoPart)
+                .enqueue(new Callback<ApiResponse>() {
+                    @Override
+                    public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(CreateReelActivity.this, "Đăng video thành công", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(CreateReelActivity.this, "Lỗi: " + response.code(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ApiResponse> call, Throwable t) {
+                        Toast.makeText(CreateReelActivity.this, "Thất bại: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
+
+
+    private File getFileFromUri(Uri uri) throws IOException {
+        InputStream inputStream = getContentResolver().openInputStream(uri);
+        File tempFile = File.createTempFile("upload", ".mp4", getCacheDir());
+        OutputStream outputStream = new FileOutputStream(tempFile);
+
+        byte[] buffer = new byte[4096];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+
+        outputStream.close();
+        inputStream.close();
+
+        return tempFile;
+    }
+
 }

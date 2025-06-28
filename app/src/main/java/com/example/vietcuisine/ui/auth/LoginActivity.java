@@ -141,7 +141,8 @@ public class LoginActivity extends AppCompatActivity {
     private void setLoading(boolean isLoading) {
         progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         loginButton.setEnabled(!isLoading);
-    }    private void saveUserSession(AuthResponse authResponse) {
+    }
+    private void saveUserSession(AuthResponse authResponse) {
         SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         

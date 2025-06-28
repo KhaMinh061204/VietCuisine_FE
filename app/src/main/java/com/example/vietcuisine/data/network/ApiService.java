@@ -124,14 +124,16 @@ public interface ApiService {
       // Reel endpoints
     @GET("reel/all")
     Call<ReelResponse> getAllReels();
-    
+
     @Multipart
     @POST("reel/add")
     Call<ApiResponse> addReel(
-        @Part("caption") RequestBody caption,
-        @Part MultipartBody.Part video
+            @Header("Authorization") String token,
+            @Part("caption") RequestBody caption,
+            @Part MultipartBody.Part video
     );
-    
+
+
     @Multipart
     @PUT("reel/{id}")
     Call<ApiResponse> updateReel(
