@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecipesByCategoryActivity extends AppCompatActivity {
-    
+
     private ImageButton backButton;
     private TextView categoryTitle;
     private RecyclerView recipesRecyclerView;
@@ -22,7 +22,7 @@ public class RecipesByCategoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipes_by_category);
-        
+
         initViews();
         setupClickListeners();
         setupRecyclerView();
@@ -47,12 +47,11 @@ public class RecipesByCategoryActivity extends AppCompatActivity {
     private void loadRecipes() {
         String categoryId = getIntent().getStringExtra("category_id");
         String categoryName = getIntent().getStringExtra("category_name");
-        
+
         if (categoryName != null) {
             categoryTitle.setText(categoryName);
         }
-        
+
         // TODO: Load recipes by category from API
     }
 }
-  

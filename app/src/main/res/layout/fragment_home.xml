@@ -23,23 +23,23 @@
                 android:padding="16dp">
 
                 <!-- Welcome Header -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginBottom="24dp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:padding="16dp">-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="Khám phá hương vị Việt Nam"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
+<!--&lt;!&ndash;                    <TextView&ndash;&gt;-->
+<!--&lt;!&ndash;                        android:layout_width="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;                        android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;                        android:fontFamily="@font/poppins_regular"&ndash;&gt;-->
+<!--&lt;!&ndash;                        android:text="Khám phá hương vị Việt Nam"&ndash;&gt;-->
+<!--&lt;!&ndash;                        android:textColor="@color/text_secondary"&ndash;&gt;-->
+<!--&lt;!&ndash;                        android:textSize="14sp" />&ndash;&gt;-->
 
-                </LinearLayout>
+<!--                </LinearLayout>-->
 
                 <!-- Posts Section -->
                 <LinearLayout
