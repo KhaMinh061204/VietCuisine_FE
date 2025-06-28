@@ -6,11 +6,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,9 +28,6 @@ import com.example.vietcuisine.data.model.RecipeResponse;
 import com.example.vietcuisine.data.model.ApiResponse;
 import com.example.vietcuisine.ui.adapters.ProfileRecipeAdapter;
 import com.example.vietcuisine.ui.auth.LoginActivity;
-import com.example.vietcuisine.ui.profile.EditProfileActivity;
-import com.example.vietcuisine.ui.settings.SettingsActivity;
-import com.example.vietcuisine.ui.messages.MessagesActivity;
 import com.example.vietcuisine.ui.recipe.RecipeDetailActivity;
 import com.google.android.material.tabs.TabLayout;
 
@@ -44,9 +40,8 @@ import retrofit2.Response;
 
 public class ProfileFragment extends Fragment {
 
-    private ImageView profileImageView;
-    private TextView nameTextView, emailTextView, recipesCountTextView, followersCountTextView, followingCountTextView;    private LinearLayout editProfileButton, settingsButton, messagesButton;
-    private LinearLayout logoutButton;
+    private ImageView profileImageView, menuButton;
+    private TextView nameTextView, emailTextView, recipesCountTextView, followersCountTextView, followingCountTextView;
     private TabLayout tabLayout;
     private RecyclerView recipesRecyclerView;
     
@@ -77,14 +72,12 @@ public class ProfileFragment extends Fragment {
 
     private void initViews(View view) {
         profileImageView = view.findViewById(R.id.profileImageView);
+        menuButton = view.findViewById(R.id.menuButton);
         nameTextView = view.findViewById(R.id.nameTextView);
         emailTextView = view.findViewById(R.id.emailTextView);
         recipesCountTextView = view.findViewById(R.id.recipesCountTextView);
         followersCountTextView = view.findViewById(R.id.followersCountTextView);
-        followingCountTextView = view.findViewById(R.id.followingCountTextView);        editProfileButton = view.findViewById(R.id.editProfileLayout);
-        settingsButton = view.findViewById(R.id.settingsLayout);
-        messagesButton = view.findViewById(R.id.myRecipesLayout); // Using available layout
-        logoutButton = view.findViewById(R.id.logoutLayout);
+        followingCountTextView = view.findViewById(R.id.followingCountTextView);
         tabLayout = view.findViewById(R.id.profileTabLayout);
         recipesRecyclerView = view.findViewById(R.id.recipesRecyclerView);
     }
@@ -115,22 +108,29 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupClickListeners() {
-        editProfileButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), EditProfileActivity.class);
-            startActivity(intent);
+        menuButton.setOnClickListener(v -> showProfileMenu());
+    }
+
+    private void showProfileMenu() {
+        PopupMenu popup = new PopupMenu(getContext(), menuButton);
+        popup.getMenuInflater().inflate(R.menu.profile_menu, popup.getMenu());
+        
+        popup.setOnMenuItemClickListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.menu_edit_profile) {
+                showError("Chức năng chỉnh sửa hồ sơ đang được phát triển");
+                return true;
+            } else if (itemId == R.id.menu_settings) {
+                showError("Chức năng cài đặt đang được phát triển");
+                return true;
+            } else if (itemId == R.id.menu_logout) {
+                showLogoutDialog();
+                return true;
+            }
+            return false;
         });
         
-        settingsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), SettingsActivity.class);
-            startActivity(intent);
-        });
-        
-        messagesButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), MessagesActivity.class);
-            startActivity(intent);
-        });
-        
-        logoutButton.setOnClickListener(v -> showLogoutDialog());
+        popup.show();
     }
 
     private void loadUserProfile() {
