@@ -4,20 +4,17 @@
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home"
         android:title="Trang chủ" />
-    
-    <item
-        android:id="@+id/nav_recipes"
-        android:icon="@drawable/ic_recipe"
-        android:title="Công thức" />
-    
     <item
         android:id="@+id/nav_reels"
         android:icon="@drawable/ic_video"
         android:title="Reels" />
-    
+    <item
+        android:id="@+id/nav_recipes"
+        android:icon="@drawable/ic_menu_book"
+        android:title="Công thức" />
     <item
         android:id="@+id/nav_shop"
-        android:icon="@drawable/ic_shop"
+        android:icon="@drawable/ic_shopping_bag"
         android:title="Cửa hàng" />
     
     <item
