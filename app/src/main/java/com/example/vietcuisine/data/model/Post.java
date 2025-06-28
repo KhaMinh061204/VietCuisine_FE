@@ -4,7 +4,8 @@ public class Post {
     private String _id;
     private User userId;
     private String caption;
-    private String image;    private String recipeId;
+    private String image;
+    private String recipeId;
     private int likesCount;
     private int commentsCount;
     private boolean isLiked;

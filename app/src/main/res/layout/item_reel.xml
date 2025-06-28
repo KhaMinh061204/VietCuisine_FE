@@ -11,22 +11,21 @@
         android:layout_height="match_parent"
         android:layout_gravity="center" />
 
-    <!-- Overlay Content -->
-    <LinearLayout
+    <!-- Overlay UI -->
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:gravity="bottom">
+        android:padding="16dp">
 
-        <!-- Left Side - Caption and Author -->
+        <!-- Bottom info -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/infoLayout"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <!-- Author Info -->
+            <!-- User info -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -35,78 +34,107 @@
                 android:layout_marginBottom="8dp">
 
                 <ImageView
-                    android:id="@+id/authorImage"
+                    android:id="@+id/userAvatar"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:background="@drawable/profile_image_background"
+                    android:src="@drawable/ic_avatar_placeholder"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_avatar_placeholder" />
+                    android:background="@drawable/profile_image_background" />
 
                 <TextView
-                    android:id="@+id/authorName"
+                    android:id="@+id/usernameText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Author Name"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
-
+                    android:text="username"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins_medium" />
             </LinearLayout>
 
             <!-- Caption -->
             <TextView
-                android:id="@+id/captionText"
+                android:id="@+id/descriptionText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_regular"
-                android:text="Reel caption..."
-                android:textColor="@color/white"
-                android:textSize="14sp"
+                android:text="Reel description goes here..."
+                android:textColor="@android:color/white"
                 android:maxLines="3"
-                android:ellipsize="end" />
+                android:ellipsize="end"
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins_regular"
+                android:layout_marginBottom="8dp" />
 
+            <!-- Music info -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_music"
+                    android:tint="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/musicText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Original audio"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/poppins_regular" />
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- Right Side - Action Buttons -->
+        <!-- Right action buttons -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:gravity="center">
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="80dp"
+            android:gravity="center_horizontal">
 
-            <ImageButton
+        <ImageButton
                 android:id="@+id/likeButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:src="@drawable/ic_heart_outline"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_bookmark_outline"
-                android:tint="@color/white"
-                android:contentDescription="Like"
-                android:layout_marginBottom="16dp" />
+                android:tint="@android:color/white"
+                android:contentDescription="Like" />
+
+            <TextView
+                android:id="@+id/likeCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:gravity="center" />
 
             <ImageButton
                 android:id="@+id/commentButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:src="@drawable/ic_comment"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_arrow_right"
-                android:tint="@color/white"
-                android:contentDescription="Comment"
-                android:layout_marginBottom="16dp" />
+                android:tint="@android:color/white"
+                android:contentDescription="Comment" />
 
             <ImageButton
                 android:id="@+id/shareButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:src="@drawable/ic_share"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_arrow_right"
-                android:tint="@color/white"
+                android:tint="@android:color/white"
                 android:contentDescription="Share" />
-
         </LinearLayout>
-
-    </LinearLayout>
-
+    </RelativeLayout>
 </FrameLayout>
