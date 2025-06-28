@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.vietcuisine.R;
 import com.example.vietcuisine.data.model.Post;
-
+import com.example.vietcuisine.utils.DateTimeUtils;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
@@ -94,11 +94,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             });
         }        public void bind(Post post) {
             // TODO: Load user data when User object is added to Post model
-            userName.setText("Unknown User");
-            userAvatar.setImageResource(R.drawable.ic_person);
-            
+            if (post.getUserId() != null && post.getUserId().getName() != null) {
+                userName.setText(post.getUserId().getName());
+            } else {
+                userName.setText("Ẩn danh"); // hoặc "Người dùng"
+            }
+
+            if (post.getUserId() != null && post.getUserId().getAvatar() != null) {
+                Glide.with(itemView.getContext())
+                        .load(post.getUserId().getAvatar())
+                        .placeholder(R.drawable.ic_avatar_placeholder)
+                        .into(userAvatar);
+            } else {
+                userAvatar.setImageResource(R.drawable.ic_avatar_placeholder);
+            }
+
+
             postContent.setText(post.getCaption());
-            postTime.setText(post.getCreatedAt());
+            postTime.setText(DateTimeUtils.formatToVietnamTime(post.getCreatedAt()));
             likesCount.setText(String.valueOf(post.getLikesCount()));
             commentsCount.setText(String.valueOf(post.getCommentsCount()));
             

@@ -2,6 +2,7 @@ package com.example.vietcuisine.ui.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +72,8 @@ public class ReelsFragment extends Fragment implements ReelAdapter.OnReelInterac
         apiService.getAllReels().enqueue(new Callback<ReelResponse>() {
             @Override
             public void onResponse(Call<ReelResponse> call, Response<ReelResponse> response) {
+                Log.d("ReelCheck", "Reels size: " + response);
+
                 if (response.isSuccessful() && response.body() != null) {
                     reels.clear();
                     reels.addAll(response.body().getReels());

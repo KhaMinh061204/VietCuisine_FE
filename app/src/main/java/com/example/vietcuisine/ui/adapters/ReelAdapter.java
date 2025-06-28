@@ -41,31 +41,30 @@ public class ReelAdapter extends RecyclerView.Adapter<ReelAdapter.ReelViewHolder
     @Override
     public void onBindViewHolder(@NonNull ReelViewHolder holder, int position) {
         Reel reel = reels.get(position);
-        
+
         holder.captionText.setText(reel.getCaption());
-        holder.authorName.setText(reel.getAuthor() != null ? reel.getAuthor().getName() : "Unknown");
-        
-        // TODO: Load video and author image
-        // Glide.with(context).load(reel.getVideoUrl()).into(holder.videoView);
+//        holder.authorName.setText(reel.getAuthor() != null ? reel.getAuthor().getName() : "Unknown");
+
+        // Set video path and auto play
+        holder.videoView.setVideoPath(reel.getVideo());
+        holder.videoView.setOnPreparedListener(mp -> {
+            mp.setLooping(true);
+            holder.videoView.start();
+        });
 
         holder.likeButton.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onLikeClick(reel);
-            }
+            if (listener != null) listener.onLikeClick(reel);
         });
 
         holder.commentButton.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onCommentClick(reel);
-            }
+            if (listener != null) listener.onCommentClick(reel);
         });
 
         holder.shareButton.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onShareClick(reel);
-            }
+            if (listener != null) listener.onShareClick(reel);
         });
     }
+
 
     @Override
     public int getItemCount() {
@@ -86,15 +85,15 @@ public class ReelAdapter extends RecyclerView.Adapter<ReelAdapter.ReelViewHolder
     static class ReelViewHolder extends RecyclerView.ViewHolder {
         VideoView videoView;
         ImageView authorImage;
-        TextView authorName, captionText;
+        TextView authorName,captionText;
         ImageButton likeButton, commentButton, shareButton;
 
         public ReelViewHolder(@NonNull View itemView) {
             super(itemView);
             videoView = itemView.findViewById(R.id.videoView);
-            authorImage = itemView.findViewById(R.id.authorImage);
-            authorName = itemView.findViewById(R.id.authorName);
-            captionText = itemView.findViewById(R.id.captionText);
+            authorImage = itemView.findViewById(R.id.userAvatar);
+            authorName = itemView.findViewById(R.id.usernameText);
+            captionText = itemView.findViewById(R.id.descriptionText);
             likeButton = itemView.findViewById(R.id.likeButton);
             commentButton = itemView.findViewById(R.id.commentButton);
             shareButton = itemView.findViewById(R.id.shareButton);
