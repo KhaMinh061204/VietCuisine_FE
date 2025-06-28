@@ -12,15 +12,15 @@ public class RecipeDetailResponse {
     @SerializedName("message")
     private String message;
 
-    @SerializedName("recipes")
-    private List<Recipe> recipes;
+    @SerializedName("recipe")
+    private Recipe recipe;
 
     public boolean isSuccess() {
         return status;
     }
 
-    public Recipe getData() {
-        return recipes != null && !recipes.isEmpty() ? recipes.get(0) : null;
+    public Recipe getRecipe() {
+        return recipe;
     }
 
     public String getMessage() {
@@ -40,7 +40,6 @@ public class RecipeDetailResponse {
 
 
     public void setData(Recipe recipe) {
-        this.recipes = new ArrayList<>();
-        this.recipes.add(recipe);
+        this.recipe = recipe;
     }
 }

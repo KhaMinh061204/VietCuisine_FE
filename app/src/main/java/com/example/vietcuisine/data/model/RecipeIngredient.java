@@ -3,18 +3,16 @@ package com.example.vietcuisine.data.model;
 public class RecipeIngredient {
     private String _id;
     private String ingredientId;
-    private String ingredientName;
+    private String name;
     private String quantity;
-    private String unit;
     private String recipeId;
 
     // Constructors
     public RecipeIngredient() {}
 
-    public RecipeIngredient(String ingredientName, String quantity, String unit) {
-        this.ingredientName = ingredientName;
+    public RecipeIngredient(String ingredientName, String quantity) {
+        this.name = ingredientName;
         this.quantity = quantity;
-        this.unit = unit;
     }
 
     // Getters and Setters
@@ -24,19 +22,16 @@ public class RecipeIngredient {
     public String getIngredientId() { return ingredientId; }
     public void setIngredientId(String ingredientId) { this.ingredientId = ingredientId; }
 
-    public String getIngredientName() { return ingredientName; }
-    public void setIngredientName(String ingredientName) { this.ingredientName = ingredientName; }
+    public String getIngredientName() { return name; }
+    public void setIngredientName(String ingredientName) { this.name = ingredientName; }
 
     public String getQuantity() { return quantity; }
     public void setQuantity(String quantity) { this.quantity = quantity; }
-
-    public String getUnit() { return unit; }
-    public void setUnit(String unit) { this.unit = unit; }
 
     public String getRecipeId() { return recipeId; }
     public void setRecipeId(String recipeId) { this.recipeId = recipeId; }
 
     // Backward compatibility for old getName() method
-    public String getName() { return ingredientName; }
-    public void setName(String name) { this.ingredientName = name; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 }

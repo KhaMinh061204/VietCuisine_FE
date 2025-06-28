@@ -15,7 +15,9 @@ import com.example.vietcuisine.R;
 import com.example.vietcuisine.data.model.ApiResponse;
 import com.example.vietcuisine.data.network.ApiClient;
 import com.example.vietcuisine.data.network.ApiService;
+import com.example.vietcuisine.utils.FileUtils;
 import com.google.android.material.textfield.TextInputEditText;
+import static com.example.vietcuisine.utils.FileUtils.getFileFromUri;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -116,7 +118,8 @@ public class CreateReelActivity extends AppCompatActivity {
         // Đọc video file
         File videoFile;
         try {
-            videoFile = getFileFromUri(selectedVideoUri);
+            videoFile = FileUtils.getFileFromUri(this, selectedVideoUri, ".mp4");
+
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, "Lỗi khi xử lý video: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -148,22 +151,21 @@ public class CreateReelActivity extends AppCompatActivity {
                 });
     }
 
-
-    private File getFileFromUri(Uri uri) throws IOException {
-        InputStream inputStream = getContentResolver().openInputStream(uri);
-        File tempFile = File.createTempFile("upload", ".mp4", getCacheDir());
-        OutputStream outputStream = new FileOutputStream(tempFile);
-
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, bytesRead);
-        }
-
-        outputStream.close();
-        inputStream.close();
-
-        return tempFile;
-    }
+//    private File getFileFromUri(Uri uri) throws IOException {
+//        InputStream inputStream = getContentResolver().openInputStream(uri);
+//        File tempFile = File.createTempFile("upload", ".mp4", getCacheDir());
+//        OutputStream outputStream = new FileOutputStream(tempFile);
+//
+//        byte[] buffer = new byte[4096];
+//        int bytesRead;
+//        while ((bytesRead = inputStream.read(buffer)) != -1) {
+//            outputStream.write(buffer, 0, bytesRead);
+//        }
+//
+//        outputStream.close();
+//        inputStream.close();
+//
+//        return tempFile;
+//    }
 
 }

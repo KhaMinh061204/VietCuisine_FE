@@ -102,9 +102,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
             public void onResponse(Call<RecipeDetailResponse> call, Response<RecipeDetailResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     RecipeDetailResponse recipeResponse = response.body();
-                    Log.d(TAG, "Response object: " + new Gson().toJson(recipeResponse));
-                    if (recipeResponse.isSuccess() && recipeResponse.getData() != null) {
-                        recipe = recipeResponse.getData();
+                    recipe = recipeResponse.getRecipe(); //
+
+                    Log.d(TAG, "Response object 2: " + new Gson().toJson(recipeResponse));
+
+                    if (recipeResponse.isSuccess() && recipe != null) {
                         displayRecipeData();
                         Log.d(TAG, "Recipe loaded successfully: " + recipe.getTitle());
                     } else {
@@ -129,6 +131,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         if (recipe == null) return;
 
         // Basic recipe information
+        Log.d("RECIPE", "Tên món: " + recipe.getTitle());
         recipeTitle.setText(recipe.getTitle() != null ? recipe.getTitle() : "Không có tên");
         recipeDescription.setText(recipe.getDescription() != null ? recipe.getDescription() : "Không có mô tả");
         
@@ -152,6 +155,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         
         // Load ingredients
         if (recipe.getIngredients() != null && !recipe.getIngredients().isEmpty()) {
+            Log.d("RECIPE Ingredient", "Tên nguyên liệu: " + recipe.getIngredients());
             ingredientAdapter.updateIngredients(recipe.getIngredients());
         }
         

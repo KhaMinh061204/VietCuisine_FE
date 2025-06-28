@@ -31,8 +31,8 @@ public class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredie
 
         // Hiển thị tên nguyên liệu
         holder.ingredientName.setText(
-                ingredient.getIngredientName() != null && !ingredient.getIngredientName().isEmpty()
-                        ? ingredient.getIngredientName()
+                ingredient.getName() != null && !ingredient.getName().isEmpty()
+                        ? ingredient.getName()
                         : "Nguyên liệu"
         );
 
