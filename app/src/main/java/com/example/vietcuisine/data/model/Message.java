@@ -6,15 +6,15 @@ public class Message {
     private String receiverId;
     private String text;
     private String createdAt;
-    private String updatedAt;
 
     // Constructors
     public Message() {}
 
-    public Message(String senderId, String receiverId, String text) {
+    public Message(String senderId, String receiverId, String text, String createdAt) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.text = text;
+        this.createdAt = createdAt;
     }
 
     // Getters and Setters
@@ -33,6 +33,4 @@ public class Message {
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 
-    public String getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
 }
