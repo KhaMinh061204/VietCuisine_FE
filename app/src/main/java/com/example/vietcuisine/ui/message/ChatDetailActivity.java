@@ -62,7 +62,10 @@ public class ChatDetailActivity extends AppCompatActivity {
         Glide.with(this).load(userAvatar).into(avatarImageView);
 
         ImageButton backButton = findViewById(R.id.backbuttonofspecificchat);
-        backButton.setOnClickListener(v -> finish());
+        backButton.setOnClickListener(v -> {
+            setResult(RESULT_OK); // Trả về kết quả OK
+            finish();
+        });
 
         recyclerView = findViewById(R.id.recyclerviewofspecific);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
