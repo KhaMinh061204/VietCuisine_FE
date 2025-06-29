@@ -31,6 +31,8 @@ import com.example.vietcuisine.ui.auth.LoginActivity;
 import com.example.vietcuisine.ui.recipe.RecipeDetailActivity;
 import com.google.android.material.tabs.TabLayout;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +79,7 @@ public class ProfileFragment extends Fragment {
         emailTextView = view.findViewById(R.id.emailTextView);
         recipesCountTextView = view.findViewById(R.id.recipesCountTextView);
         followersCountTextView = view.findViewById(R.id.followersCountTextView);
-        followingCountTextView = view.findViewById(R.id.followingCountTextView);
+//        followingCountTextView = view.findViewById(R.id.followingCountTextView);
         tabLayout = view.findViewById(R.id.profileTabLayout);
         recipesRecyclerView = view.findViewById(R.id.recipesRecyclerView);
     }
@@ -90,6 +92,7 @@ public class ProfileFragment extends Fragment {
 
     private void setupTabs() {
         tabLayout.addTab(tabLayout.newTab().setText("Công thức của tôi"));
+        tabLayout.addTab(tabLayout.newTab().setText("Bài viết"));
         tabLayout.addTab(tabLayout.newTab().setText("Đã lưu"));
         
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -114,6 +117,22 @@ public class ProfileFragment extends Fragment {
     private void showProfileMenu() {
         PopupMenu popup = new PopupMenu(getContext(), menuButton);
         popup.getMenuInflater().inflate(R.menu.profile_menu, popup.getMenu());
+
+        try {
+            Field[] fields = popup.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                if ("mPopup".equals(field.getName())) {
+                    field.setAccessible(true);
+                    Object menuPopupHelper = field.get(popup);
+                    Class<?> classPopupHelper = Class.forName(menuPopupHelper.getClass().getName());
+                    Method setForceShowIcon = classPopupHelper.getMethod("setForceShowIcon", boolean.class);
+                    setForceShowIcon.invoke(menuPopupHelper, true);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         
         popup.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
