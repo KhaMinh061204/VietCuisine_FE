@@ -167,16 +167,16 @@ public class RecipeDetailActivity extends AppCompatActivity {
     
     private void displayNutritionInfo() {
         if (calories != null) {
-            calories.setText(String.format("%.0f cal", recipe.getCalories()));
+            calories.setText(String.format("%.0fg", recipe.getCalories()));
         }
         if (protein != null) {
-            protein.setText(String.format("%.1fg protein", recipe.getProtein()));
+            protein.setText(String.format("%.0fg", recipe.getProtein()));
         }
         if (carbs != null) {
-            carbs.setText(String.format("%.1fg carbs", recipe.getCarbs()));
+            carbs.setText(String.format("%.0fg", recipe.getCarbs()));
         }
         if (fat != null) {
-            fat.setText(String.format("%.1fg fat", recipe.getFat()));
+            fat.setText(String.format("%.0fg", recipe.getFat()));
         }
     }
 
