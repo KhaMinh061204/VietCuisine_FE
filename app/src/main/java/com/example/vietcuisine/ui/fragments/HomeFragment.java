@@ -1,6 +1,13 @@
 package com.example.vietcuisine.ui.fragments;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import static androidx.core.content.ContextCompat.startActivity;
+import static java.security.AccessController.getContext;
+
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,12 +50,18 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
     private PostAdapter postAdapter;
     private ApiService apiService;
     private List<Post> posts = new ArrayList<>();
+    private String token;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        
+
+        SharedPreferences prefs = requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE);
+        token = prefs.getString("token", null);
+        Log.d("Token", "Loaded token: " + token);
+
         initViews(view);
         setupRecyclerViews();
         setupClickListeners();
@@ -90,7 +103,7 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
 
     private void loadPosts() {
         // Backend returns posts array directly 
-        apiService.getAllPosts().enqueue(new Callback<List<Post>>() {
+        apiService.getAllPosts("Bearer "+token).enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 swipeRefreshLayout.setRefreshing(false);
@@ -124,19 +137,26 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
 
     @Override
     public void onLikeClick(Post post) {
-        // Handle like action
-        apiService.toggleLike(new LikeRequest(post.getId(), "posts")).enqueue(new Callback<ApiResponse>() {
+        if (token == null) {
+            Toast.makeText(requireContext(), "Bạn chưa đăng nhập", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        apiService.toggleLike("Bearer "+ token,new LikeRequest("posts",post.getId())).enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 if (response.isSuccessful()) {
-                    // Update UI
-                    loadPosts();
+                    // Tăng/giảm like ngay lập tức mà không cần load lại toàn bộ
+                    post.setLiked(!post.isLiked());
+                    int currentLikes = post.getLikesCount();
+                    post.setLikesCount(post.isLiked() ? currentLikes + 1 : currentLikes - 1);
+                    postAdapter.notifyDataSetChanged();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                showError("Lỗi thao tác like");
+                Toast.makeText(requireContext(), "Không thể like bài viết", Toast.LENGTH_SHORT).show();
             }
         });
     }

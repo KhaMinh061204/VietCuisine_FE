@@ -116,7 +116,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             commentsCount.setText(String.valueOf(post.getCommentsCount()));
             
             // Set like button state
-            likeButton.setImageResource(post.isLiked() ? R.drawable.ic_heart_filled : R.drawable.ic_heart_outline);
+            likeButton.setImageResource(post.isLiked() ? R.drawable.ic_favorite_active : R.drawable.ic_favorite_inactive);
             
             if (post.getImage() != null && !post.getImage().isEmpty()) {
                 postImage.setVisibility(View.VISIBLE);

@@ -4,9 +4,9 @@ public class LikeRequest {
     private String targetId;
     private String onModel;
 
-    public LikeRequest(String targetId, String onModel) {
-        this.targetId = targetId;
+    public LikeRequest(String onModel,String targetId) {
         this.onModel = onModel;
+        this.targetId = targetId;
     }
 
     // Getters and Setters
