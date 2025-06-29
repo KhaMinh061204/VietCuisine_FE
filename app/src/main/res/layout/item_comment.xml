@@ -1,56 +1,125 @@
-<!-- res/layout/item_comment.xml -->
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:padding="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <!-- Avatar người dùng -->
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/commentAvatar"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:src="@drawable/ic_avatar_placeholder"
+        android:src="@drawable/ic_person"
         android:scaleType="centerCrop"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/circle_background" />
+        app:shapeAppearanceOverlay="@style/CircleImageView"
+        android:background="@drawable/ic_person" />
 
+    <!-- Nội dung bình luận và phản hồi -->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content">
 
+        <!-- Tên người dùng -->
         <TextView
             android:id="@+id/commentUserName"
             android:textStyle="bold"
-            android:text="Tên người dùng"
             android:textSize="14sp"
+            android:textColor="#000000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <!-- Nội dung bình luận -->
         <TextView
             android:id="@+id/commentContent"
-            android:text="Nội dung bình luận"
             android:textSize="13sp"
+            android:textColor="#333333"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/commentCreatedAt"
-            android:text="1 giờ trước"
-            android:textSize="11sp"
-            android:textColor="#888888"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <!-- Thời gian + Trả lời + Tuỳ chọn -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical">
 
+            <!-- Nhóm thời gian + nút trả lời -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/commentCreatedAt"
+                    android:text="1 giờ trước"
+                    android:textSize="11sp"
+                    android:textColor="#888888"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <!-- Khoảng cách -->
+                <TextView
+                    android:layout_width="12dp"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/commentReplyButton"
+                    android:text="Trả lời"
+                    android:textSize="11sp"
+                    android:textColor="#0000FF"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <!-- Nút ba chấm -->
+            <ImageButton
+                android:id="@+id/commentOptionsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:src="@drawable/ic_more_vert"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Tùy chọn" />
+        </LinearLayout>
+
+        <!-- Ô nhập phản hồi -->
+        <LinearLayout
+            android:id="@+id/replyBox"
+            android:visibility="gone"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <EditText
+                android:id="@+id/replyEditText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="Phản hồi..." />
+
+            <ImageButton
+                android:id="@+id/sendReplyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_send"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
+        </LinearLayout>
+
+        <!-- Khu vực chứa các phản hồi -->
+        <LinearLayout
+            android:id="@+id/replyContainer"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="40dp"
+            android:visibility="visible"/>
     </LinearLayout>
-    <ImageButton
-        android:id="@+id/commentOptionsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_more_vert"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Tùy chọn"
-        android:layout_gravity="end"
-        android:layout_marginStart="8dp" />
 </LinearLayout>

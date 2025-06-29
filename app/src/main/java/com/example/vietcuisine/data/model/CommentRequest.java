@@ -3,14 +3,18 @@ package com.example.vietcuisine.data.model;
 public class CommentRequest {
     private String content;
     private String targetId;
-    private String onModel; // "Recipe", "Post", "Reel"
+    private String onModel;
+    private String parentId; //
 
-    public CommentRequest() {}
-
-    public CommentRequest(String content, String targetId, String onModel) {
+    public CommentRequest(String content, String targetId, String targetType) {
         this.content = content;
         this.targetId = targetId;
-        this.onModel = onModel;
+        this.onModel = targetType;
+    }
+
+    public CommentRequest(String content, String targetId, String targetType, String parentId) {
+        this(content, targetId, targetType);
+        this.parentId = parentId;
     }
 
     public String getContent() {
@@ -33,7 +37,13 @@ public class CommentRequest {
         return onModel;
     }
 
-    public void setOnModel(String onModel) {
-        this.onModel = onModel;
+    public void setOnModel(String targetType) {
+        this.onModel = targetType;
+    }
+    public String getParentId() {
+        return parentId;
+    }
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 }

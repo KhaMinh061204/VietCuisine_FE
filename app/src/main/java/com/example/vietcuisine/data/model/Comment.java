@@ -1,5 +1,8 @@
 package com.example.vietcuisine.data.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Comment {
     private String _id;
     private String targetId;
@@ -8,15 +11,22 @@ public class Comment {
     private String content;
     private String createAt;
     private String updatedAt;
+    private String parentId;
+    private List<Comment> replies;
+
+    public List<Comment> getReplies() {
+        return replies != null ? replies : new ArrayList<>();
+    }
 
     // Constructors
     public Comment() {}
 
-    public Comment(String targetId, String onModel, User userId, String content) {
+    public Comment(String targetId, String onModel, User userId, String content,String parentId) {
         this.targetId = targetId;
         this.onModel = onModel;
         this.userId = userId;
         this.content = content;
+        this.parentId=parentId;
     }
 
     // Getters and Setters
@@ -40,4 +50,12 @@ public class Comment {
 
     public String getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
 }

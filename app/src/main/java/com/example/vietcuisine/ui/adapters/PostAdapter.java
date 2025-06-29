@@ -1,7 +1,6 @@
 package com.example.vietcuisine.ui.adapters;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,10 +39,10 @@ import retrofit2.Response;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
-    private List<Post> posts;
-    private Context context;
-    private OnPostInteractionListener listener;
-    private String userId;
+    private final List<Post> posts;
+    private final Context context;
+    private final OnPostInteractionListener listener;
+    private final String userId;
 
     public interface OnPostInteractionListener {
         void onPostClick(Post post);
@@ -68,9 +67,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         Post post = posts.get(position);
-        holder.commentRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-        holder.commentAdapter = new CommentAdapter(context, new ArrayList<>(),userId);
-        holder.commentRecyclerView.setAdapter(holder.commentAdapter);
         holder.bind(post);
     }
 
@@ -79,19 +75,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         return posts.size();
     }
 
-    class PostViewHolder extends RecyclerView.ViewHolder {
-        private ImageView userAvatar, postImage, likeButton, commentButton;
-        private TextView userName, postTime, postContent, likesCount, commentsCount, viewMoreComments;
-        private EditText commentEditText;
-        private ImageButton sendCommentButton;
-        private View commentSection;
-        public RecyclerView commentRecyclerView;
-        public CommentAdapter commentAdapter;
+    class PostViewHolder extends RecyclerView.ViewHolder implements CommentAdapter.OnCommentActionListener {
+        private final ImageView userAvatar, postImage, likeButton, commentButton;
+        private final TextView userName, postTime, postContent, likesCount, commentsCount, viewMoreComments;
+        private final EditText commentEditText;
+        private final ImageButton sendCommentButton;
+        private final View commentSection;
+        private final RecyclerView commentRecyclerView;
+        private CommentAdapter commentAdapter;
         private List<Comment> allComments = new ArrayList<>();
-
+        private String replyingToCommentId = null;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
+
             userAvatar = itemView.findViewById(R.id.userAvatar);
             userName = itemView.findViewById(R.id.userName);
             postTime = itemView.findViewById(R.id.postTime);
@@ -101,127 +98,76 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             commentButton = itemView.findViewById(R.id.commentButton);
             likesCount = itemView.findViewById(R.id.likesCount);
             commentsCount = itemView.findViewById(R.id.commentsCount);
-
             commentEditText = itemView.findViewById(R.id.commentEditText);
             sendCommentButton = itemView.findViewById(R.id.sendCommentButton);
             commentSection = itemView.findViewById(R.id.commentSection);
             commentRecyclerView = itemView.findViewById(R.id.commentRecyclerView);
             viewMoreComments = itemView.findViewById(R.id.showMoreCommentsButton);
 
-            itemView.setOnClickListener(v -> {
-                int position = getAdapterPosition();
-                if (listener != null && position != RecyclerView.NO_POSITION) {
-                    listener.onPostClick(posts.get(position));
-                }
-            });
-
             likeButton.setOnClickListener(v -> {
-                int position = getAdapterPosition();
+                int position = getBindingAdapterPosition();
                 if (listener != null && position != RecyclerView.NO_POSITION) {
                     listener.onLikeClick(posts.get(position));
                 }
             });
 
             commentButton.setOnClickListener(v -> {
-                int position = getAdapterPosition();
+                int position = getBindingAdapterPosition();
                 if (position == RecyclerView.NO_POSITION) return;
 
                 Post post = posts.get(position);
-
                 if (commentSection.getVisibility() == View.VISIBLE) {
                     commentSection.setVisibility(View.GONE);
                 } else {
                     commentSection.setVisibility(View.VISIBLE);
-
-                    ApiService apiService = ApiClient.getClient().create(ApiService.class);
-                    apiService.getCommentsByTarget(post.getId(), "posts").enqueue(new Callback<List<Comment>>() {
-                        @Override
-                        public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
-                            if (response.isSuccessful() && response.body() != null) {
-                                allComments = response.body();
-
-                                boolean showMore = allComments.size() > 5;
-                                List<Comment> initial = showMore
-                                        ? allComments.subList(0, 5)
-                                        : new ArrayList<>(allComments);
-
-                                commentAdapter.setComments(initial);
-
-                                viewMoreComments.setVisibility(showMore ? View.VISIBLE : View.GONE);
-                                viewMoreComments.setText("Xem thêm");
-
-                                viewMoreComments.setOnClickListener(toggleView -> {
-                                    boolean isExpanded = viewMoreComments.getText().toString().equals("Rút gọn");
-                                    if (isExpanded) {
-                                        commentAdapter.setComments(allComments.subList(0, 5));
-                                        viewMoreComments.setText("Xem thêm");
-                                    } else {
-                                        commentAdapter.setComments(allComments);
-                                        viewMoreComments.setText("Rút gọn");
-                                    }
-                                });
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<List<Comment>> call, Throwable t) {
-                            Toast.makeText(context, "Không thể tải bình luận", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    loadComments(post);
                 }
             });
 
             sendCommentButton.setOnClickListener(v -> {
-                int position = getAdapterPosition();
+                int position = getBindingAdapterPosition();
                 if (position == RecyclerView.NO_POSITION) return;
 
+                Post post = posts.get(position);
                 String content = commentEditText.getText().toString().trim();
                 if (content.isEmpty()) {
                     Toast.makeText(context, "Vui lòng nhập bình luận", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                Post post = posts.get(position);
-                CommentRequest request = new CommentRequest(content, post.getId(), "posts");
+                CommentRequest request = new CommentRequest(content, post.getId(), "posts", replyingToCommentId);
                 ApiService apiService = ApiClient.getClient().create(ApiService.class);
-
                 apiService.createComment(request).enqueue(new Callback<ApiResponse>() {
                     @Override
                     public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(context, "Đã bình luận", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, replyingToCommentId == null ? "Đã bình luận" : "Đã trả lời", Toast.LENGTH_SHORT).show();
                             commentEditText.setText("");
+                            replyingToCommentId = null;
+
+                            // Tăng số lượng
                             post.setCommentsCount(post.getCommentsCount() + 1);
                             commentsCount.setText(String.valueOf(post.getCommentsCount()));
 
-
-                            // 👉 Tạo comment mới
                             Comment newComment = new Comment();
                             newComment.setContent(content);
+                            newComment.setUserId(post.getUserId());
+                            newComment.setParentId(replyingToCommentId);
+
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
                             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-                            String currentTime = sdf.format(new Date());
+                            newComment.setCreateAt(sdf.format(new Date()));
 
-                            newComment.setCreateAt(currentTime);
-
-                            newComment.setUserId(post.getUserId());
-
-                            // Thêm vào danh sách gốc
                             allComments.add(0, newComment);
 
-                            // Cập nhật hiển thị: nếu đang ở chế độ xem 5 thì cắt
                             boolean isExpanded = viewMoreComments.getText().toString().equals("Rút gọn");
                             if (isExpanded) {
                                 commentAdapter.setComments(allComments);
                             } else {
-                                commentAdapter.setComments(
-                                        allComments.size() > 5 ? allComments.subList(0, 5) : new ArrayList<>(allComments)
-                                );
+                                commentAdapter.setComments(allComments.size() > 5 ? allComments.subList(0, 5) : new ArrayList<>(allComments));
                             }
 
                             viewMoreComments.setVisibility(allComments.size() > 5 ? View.VISIBLE : View.GONE);
-                        } else {
-                            Toast.makeText(context, "Lỗi gửi bình luận", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -232,19 +178,48 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 });
             });
         }
-            public void bind(Post post) {
-            userName.setText(post.getUserId() != null && post.getUserId().getName() != null
-                    ? post.getUserId().getName() : "Ẩn danh");
 
-            if (post.getUserId() != null && post.getUserId().getAvatar() != null) {
-                Glide.with(itemView.getContext())
-                        .load(post.getUserId().getAvatar())
-                        .placeholder(R.drawable.ic_avatar_placeholder)
-                        .into(userAvatar);
-            } else {
-                userAvatar.setImageResource(R.drawable.ic_avatar_placeholder);
-            }
+        private void loadComments(Post post) {
+            ApiService apiService = ApiClient.getClient().create(ApiService.class);
+            apiService.getCommentsByTarget(post.getId(), "posts").enqueue(new Callback<List<Comment>>() {
+                @Override
+                public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        allComments = response.body();
 
+                        commentAdapter = new CommentAdapter(context, new ArrayList<>(), userId, PostViewHolder.this);
+                        commentRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+                        commentRecyclerView.setAdapter(commentAdapter);
+
+                        boolean showMore = allComments.size() > 5;
+                        List<Comment> initial = showMore ? allComments.subList(0, 5) : new ArrayList<>(allComments);
+                        commentAdapter.setComments(initial);
+
+                        viewMoreComments.setVisibility(showMore ? View.VISIBLE : View.GONE);
+                        viewMoreComments.setText("Xem thêm");
+
+                        viewMoreComments.setOnClickListener(v -> {
+                            boolean expanded = viewMoreComments.getText().toString().equals("Rút gọn");
+                            if (expanded) {
+                                commentAdapter.setComments(allComments.subList(0, 5));
+                                viewMoreComments.setText("Xem thêm");
+                            } else {
+                                commentAdapter.setComments(allComments);
+                                viewMoreComments.setText("Rút gọn");
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Comment>> call, Throwable t) {
+                    Toast.makeText(context, "Không thể tải bình luận", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        public void bind(Post post) {
+            userName.setText(post.getUserId() != null ? post.getUserId().getName() : "Ẩn danh");
             postContent.setText(post.getCaption());
             postTime.setText(DateTimeUtils.formatToVietnamTime(post.getCreatedAt()));
             likesCount.setText(String.valueOf(post.getLikesCount()));
@@ -255,15 +230,27 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 postImage.setVisibility(View.VISIBLE);
                 Glide.with(itemView.getContext())
                         .load(post.getImage())
-                        .centerCrop()
                         .placeholder(R.drawable.placeholder_post)
                         .into(postImage);
             } else {
                 postImage.setVisibility(View.GONE);
             }
 
+            Glide.with(itemView.getContext())
+                    .load(post.getUserId() != null ? post.getUserId().getAvatar() : null)
+                    .placeholder(R.drawable.ic_avatar_placeholder)
+                    .into(userAvatar);
+
             commentSection.setVisibility(View.GONE);
             commentEditText.setText("");
+            replyingToCommentId = null;
+        }
+
+        @Override
+        public void onReply(Comment parentComment) {
+            replyingToCommentId = parentComment.getId();
+            commentEditText.requestFocus();
+            commentEditText.setHint("Phản hồi " + (parentComment.getUserId() != null ? parentComment.getUserId().getName() : ""));
         }
     }
 }
