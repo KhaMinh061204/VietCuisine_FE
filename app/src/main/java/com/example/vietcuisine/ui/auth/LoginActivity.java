@@ -90,8 +90,10 @@ public class LoginActivity extends AppCompatActivity {
                     AuthResponse authResponse = response.body();
                     Log.d("LoginActivity", "Token: " + authResponse.getToken());
                     Log.d("LoginActivity", "Message: " + authResponse.getMessage());
-                    Log.d("LoginActivity", "User: " + (authResponse.getUser() != null ? "not null" : "null"));
-                    Log.d("LoginActivity", "Account: " + (authResponse.getAccount() != null ? "not null" : "null"));
+                    Log.d("LoginActivity", "User_name: " + authResponse.getUser().getName());
+                    Log.d("LoginActivity", "User_id: " + authResponse.getUser().getId());
+                    Log.d("LoginActivity", "User_phone: " + authResponse.getUser().getPhone());
+                    Log.d("LoginActivity", "Account: " + authResponse.getAccount().getEmail() );
                     
                     saveUserSession(authResponse);
                     

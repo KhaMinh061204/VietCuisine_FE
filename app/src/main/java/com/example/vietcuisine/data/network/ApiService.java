@@ -96,7 +96,7 @@ public interface ApiService {
 
     // Post endpoints
     @GET("posts")
-    Call<List<Post>> getAllPosts();
+    Call<List<Post>> getAllPosts(@Header("Authorization") String token);
     
     @GET("posts/my")
     Call<PostResponse> getMyPosts();
@@ -123,7 +123,7 @@ public interface ApiService {
     Call<ApiResponse> deletePost(@Path("id") String id);
       // Reel endpoints
     @GET("reel/all")
-    Call<ReelResponse> getAllReels();
+    Call<ReelResponse> getAllReels(@Header("Authorization") String token);
 
     @Multipart
     @POST("reel/add")
@@ -147,7 +147,9 @@ public interface ApiService {
     
     // Like endpoints
     @POST("like")
-    Call<ApiResponse> toggleLike(@Body LikeRequest request);
+    Call<ApiResponse> toggleLike(
+            @Header("Authorization") String token,
+            @Body LikeRequest request);
     
     @GET("like")
     Call<LikeResponse> getLikes(@Query("targetId") String targetId, @Query("onModel") String onModel);
