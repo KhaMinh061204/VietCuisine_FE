@@ -17,7 +17,6 @@ import com.bumptech.glide.Glide;
 import com.example.vietcuisine.R;
 import com.example.vietcuisine.data.model.MessageUser;
 import com.example.vietcuisine.ui.message.ChatDetailActivity;
-//import com.example.vietcuisine.ui.messages.ChatDetailActivity;
 
 import java.util.List;
 
@@ -25,10 +24,16 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
     private Context context;
     private List<MessageUser> userList;
+    private OnUserClickListener listener;
 
-    public MessageListAdapter(Context context, List<MessageUser> userList) {
+    public interface OnUserClickListener {
+        void onUserClick(MessageUser user);
+    }
+
+    public MessageListAdapter(Context context, List<MessageUser> userList,OnUserClickListener listener) {
         this.context = context;
         this.userList = userList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -48,11 +53,9 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         Glide.with(context).load(user.getAvatar()).into(holder.avatarImageView);
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ChatDetailActivity.class);
-            intent.putExtra("user_id", user.getUserId());
-            intent.putExtra("user_name", user.getName());
-            intent.putExtra("user_avatar", user.getAvatar());
-            context.startActivity(intent);
+            if (listener != null) {
+                listener.onUserClick(user);
+            }
         });
     }
 

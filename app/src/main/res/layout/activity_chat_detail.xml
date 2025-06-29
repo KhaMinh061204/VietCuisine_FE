@@ -100,7 +100,7 @@
         android:paddingLeft="20dp"
         android:paddingEnd="10dp"
         android:textSize="18sp"
-        android:background="@drawable/message_background"
+        android:background="#FFFFFF"
         android:textAlignment="textStart"
         android:layout_alignParentBottom="true"
         android:layout_marginRight="55dp"

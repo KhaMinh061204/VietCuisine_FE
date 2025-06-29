@@ -1,6 +1,7 @@
 package com.example.vietcuisine.ui.messages;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.example.vietcuisine.data.model.MessageUser;
 import com.example.vietcuisine.data.network.ApiClient;
 import com.example.vietcuisine.ui.adapters.MessageListAdapter;
 import com.example.vietcuisine.data.network.ApiService;
+import com.example.vietcuisine.ui.message.ChatDetailActivity;
 import com.example.vietcuisine.utils.SharedPrefsManager;
 
 import java.util.ArrayList;
@@ -32,32 +34,41 @@ public class MessageListActivity extends AppCompatActivity {
     private MessageListAdapter adapter;
     private ApiService apiService;
     private String currentUserId ;
-
+    private static final int REQUEST_CODE_CHAT_DETAIL = 1001;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_list);
-//        SharedPreferences prefs = getSharedPreferences("user_session", Context.MODE_PRIVATE);
-//        currentUserId = prefs.getString("user_id", null);
-        currentUserId= SharedPrefsManager.getInstance().getUserId();
-        Log.d("currentUser","userId"+currentUserId);
+        currentUserId = SharedPrefsManager.getInstance().getUserId();
         recyclerViewUsers = findViewById(R.id.recyclerViewUsers);
         recyclerViewUsers.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new MessageListAdapter(this, userList);
+        adapter = new MessageListAdapter(this, userList, user -> {
+            Intent intent = new Intent(MessageListActivity.this, ChatDetailActivity.class);
+            intent.putExtra("user_id", user.getUserId());
+            intent.putExtra("user_name", user.getName());
+            intent.putExtra("user_avatar", user.getAvatar());
+            startActivityForResult(intent, REQUEST_CODE_CHAT_DETAIL);
+        });
         recyclerViewUsers.setAdapter(adapter);
         apiService = ApiClient.getClient().create(ApiService.class);
         ImageButton backButton = findViewById(R.id.backbuttonofspecificchat);
         backButton.setOnClickListener(v -> finish());
         fetchConversations();
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_CHAT_DETAIL) {
+            fetchConversations(); // Gọi lại API khi quay về
+        }
+    }
 
     private void fetchConversations() {
-        Log.d("UserId message","message"+currentUserId);
+        Log.d("UserId",currentUserId);
         apiService.getConversations(currentUserId).enqueue(new Callback<List<MessageUser>>() {
             @Override
             public void onResponse(Call<List<MessageUser>> call, Response<List<MessageUser>> response) {
-                Log.d("Response mes","mes"+response);
                 if (response.isSuccessful() && response.body() != null) {
                     for (MessageUser user : response.body()) {
                         Log.d("MessageListActivity", "User: " + user.getName() + " - ID: " + user.getUserId());
@@ -67,13 +78,13 @@ public class MessageListActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(MessageListActivity.this, "Không lấy được cuộc trò chuyện", Toast.LENGTH_SHORT).show();
+                    Log.e("MessageListActivity", "Response error: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<List<MessageUser>> call, Throwable t) {
-                Log.e("MessageListActivity", "Lỗi mạng: " + t.getMessage(), t);
-                Toast.makeText(MessageListActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MessageListActivity.this, "Lỗi mạng", Toast.LENGTH_SHORT).show();
             }
         });
     }
