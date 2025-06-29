@@ -21,7 +21,7 @@ public interface ApiService {
     Call<ApiResponse> logout();
     
     @GET("auth/profile")
-    Call<UserResponse> getUserProfile();
+    Call<User> getUserProfile();
     
     @PUT("auth/update-profile")
     Call<UserResponse> updateProfile(@Body UpdateProfileRequest request);
