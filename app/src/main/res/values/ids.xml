@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="commentAvatar" type="id" />
+    <item name="commentUserName" type="id" />
+    <item name="commentContent" type="id" />
+    <item name="commentCreatedAt" type="id" />
+    <item name="commentOptionsButton" type="id" />
+</resources>
