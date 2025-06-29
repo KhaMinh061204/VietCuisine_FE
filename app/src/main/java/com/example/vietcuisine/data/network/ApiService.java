@@ -186,10 +186,10 @@ public interface ApiService {
     
     // Message endpoints
     @GET("messages/conversations/{userId}")
-    Call<ConversationResponse> getConversations(@Path("userId") String userId);
+    Call<List<MessageUser>> getConversations(@Path("userId") String userId);
     
     @GET("messages/{userId1}/{userId2}")
-    Call<MessageResponse> getMessagesBetweenUsers(@Path("userId1") String userId1, @Path("userId2") String userId2);
+    Call<List<Message>> getMessagesBetweenUsers(@Path("userId1") String userId1, @Path("userId2") String userId2, @Query("page") int page);
     
     // Admin endpoints (if user has admin role)
     @GET("admin/users")

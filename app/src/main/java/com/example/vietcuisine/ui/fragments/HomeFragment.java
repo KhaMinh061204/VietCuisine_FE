@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import com.example.vietcuisine.data.network.ApiService;
 import com.example.vietcuisine.data.model.Post;
 import com.example.vietcuisine.data.model.ApiResponse;
 import com.example.vietcuisine.ui.adapters.PostAdapter;
+import com.example.vietcuisine.ui.messages.MessageListActivity;
 import com.example.vietcuisine.ui.posts.PostDetailActivity;
 import com.example.vietcuisine.ui.comments.CommentsActivity;
 
@@ -61,6 +63,13 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
     private void initViews(View view) {
         postsRecyclerView = view.findViewById(R.id.postsRecyclerView);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        View headerView = view.findViewById(R.id.headerView);
+        ImageButton messageButton = headerView.findViewById(R.id.messageButton);
+
+        messageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), MessageListActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void setupRecyclerViews() {

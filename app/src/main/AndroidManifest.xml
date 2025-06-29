@@ -66,10 +66,14 @@
             android:name=".ui.post.PostDetailActivity"
             android:exported="false"
             android:theme="@style/Theme.VietCuisine.NoActionBar" />
-            
+
+        <!-- Messages Activity -->
+        <activity android:name=".ui.messages.MessageListActivity" />
+        <activity android:name=".ui.messages.MessageActivity" />
+
         <!-- Chat Activity -->
         <activity
-            android:name=".ui.message.ChatActivity"
+            android:name=".ui.message.ChatDetailActivity"
             android:exported="false"
             android:theme="@style/Theme.VietCuisine.NoActionBar" />
             

@@ -10,7 +10,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include layout="@layout/header_home" />
+        <include
+            android:id="@+id/headerView"
+            layout="@layout/header_home" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"

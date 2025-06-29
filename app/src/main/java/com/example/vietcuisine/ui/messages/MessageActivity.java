@@ -1,17 +1,13 @@
-package com.example.vietcuisine.ui.message;
+package com.example.vietcuisine.ui.messages;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.vietcuisine.R;
 
-public class ChatActivity extends AppCompatActivity {
-
+public class MessageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
-        
-        // TODO: Implement chat functionality
+        setContentView(R.layout.activity_message);
     }
 }
