@@ -4,117 +4,115 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class SharedPrefsManager {
-    private static final String PREF_NAME = "VietCuisinePref";
-    private static final String KEY_ACCESS_TOKEN = "access_token";
-    private static final String KEY_REFRESH_TOKEN = "refresh_token";
-    private static final String KEY_USER_ID = "user_id";
-    private static final String KEY_USER_EMAIL = "user_email";
-    private static final String KEY_USER_NAME = "user_name";
-    private static final String KEY_IS_LOGGED_IN = "is_logged_in";
 
+    private static final String PREF_NAME = "vietcuisine_prefs";
     private static SharedPrefsManager instance;
-    private static SharedPreferences sharedPreferences;
+    private final SharedPreferences prefs;
+    private final SharedPreferences.Editor editor;
+
+    // Keys
+    private static final String KEY_ACCESS_TOKEN = "access_token";
+    private static final String KEY_IS_LOGGED_IN = "is_logged_in";
+    private static final String KEY_USER_ID = "user_id";
+    private static final String KEY_USER_NAME = "user_name";
+    private static final String KEY_USER_EMAIL = "user_email";
+    private static final String KEY_USER_PHONE = "user_phone";
+    private static final String KEY_USER_GENDER = "user_gender";
+    private static final String KEY_USER_AVATAR = "user_avatar";
 
     private SharedPrefsManager(Context context) {
-        sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        editor = prefs.edit();
     }
 
-    public static synchronized void init(Context context) {
+    // Call once in Application class or Activity
+    public static void init(Context context) {
         if (instance == null) {
-            instance = new SharedPrefsManager(context);
+            instance = new SharedPrefsManager(context.getApplicationContext());
         }
     }
 
-    public static synchronized SharedPrefsManager getInstance() {
+    public static SharedPrefsManager getInstance() {
         if (instance == null) {
-            throw new IllegalStateException("SharedPrefsManager must be initialized first");
+            throw new IllegalStateException("SharedPrefsManager chưa được khởi tạo. Gọi init(context) trước!");
         }
         return instance;
     }
 
-    public void saveAccessToken(String token) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_ACCESS_TOKEN, token);
-        editor.apply();
+    // ==================== Token ====================
+    public void setAccessToken(String token) {
+        editor.putString(KEY_ACCESS_TOKEN, token).apply();
     }
 
     public String getAccessToken() {
-        return sharedPreferences.getString(KEY_ACCESS_TOKEN, null);
+        return prefs.getString(KEY_ACCESS_TOKEN, null);
     }
 
-    public void saveRefreshToken(String token) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_REFRESH_TOKEN, token);
-        editor.apply();
-    }
-
-    public String getRefreshToken() {
-        return sharedPreferences.getString(KEY_REFRESH_TOKEN, null);
-    }
-
-    public void saveUserId(String userId) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_USER_ID, userId);
-        editor.apply();
-    }
-
-    public String getUserId() {
-        return sharedPreferences.getString(KEY_USER_ID, null);
-    }
-
-    public void saveUserEmail(String email) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_USER_EMAIL, email);
-        editor.apply();
-    }
-
-    public String getUserEmail() {
-        return sharedPreferences.getString(KEY_USER_EMAIL, null);
-    }
-
-    public void saveUserName(String name) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_USER_NAME, name);
-        editor.apply();
-    }
-
-    public String getUserName() {
-        return sharedPreferences.getString(KEY_USER_NAME, null);
-    }
-
-    public void setLoggedIn(boolean isLoggedIn) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(KEY_IS_LOGGED_IN, isLoggedIn);
-        editor.apply();
+    // ==================== Login Status ====================
+    public void setLoggedIn(boolean loggedIn) {
+        editor.putBoolean(KEY_IS_LOGGED_IN, loggedIn).apply();
     }
 
     public boolean isLoggedIn() {
-        return sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false);
+        return prefs.getBoolean(KEY_IS_LOGGED_IN, false);
     }
 
-    public void saveUserData(String userId, String email, String name, String accessToken, String refreshToken) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_USER_ID, userId);
-        editor.putString(KEY_USER_EMAIL, email);
-        editor.putString(KEY_USER_NAME, name);
-        editor.putString(KEY_ACCESS_TOKEN, accessToken);
-        editor.putString(KEY_REFRESH_TOKEN, refreshToken);
-        editor.putBoolean(KEY_IS_LOGGED_IN, true);
-        editor.apply();
+    // ==================== User ID ====================
+    public void saveUserId(String userId) {
+        editor.putString(KEY_USER_ID, userId).apply();
     }
 
-    public void clearUserData() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove(KEY_USER_ID);
-        editor.remove(KEY_USER_EMAIL);
-        editor.remove(KEY_USER_NAME);
-        editor.remove(KEY_ACCESS_TOKEN);
-        editor.remove(KEY_REFRESH_TOKEN);
-        editor.putBoolean(KEY_IS_LOGGED_IN, false);
-        editor.apply();
+    public String getUserId() {
+        return prefs.getString(KEY_USER_ID, null);
     }
 
-    public void logout() {
-        clearUserData();
+    // ==================== User Name ====================
+    public void saveUserName(String name) {
+        editor.putString(KEY_USER_NAME, name).apply();
+    }
+
+    public String getUserName() {
+        return prefs.getString(KEY_USER_NAME, null);
+    }
+
+    // ==================== User Email ====================
+    public void saveUserEmail(String email) {
+        editor.putString(KEY_USER_EMAIL, email).apply();
+    }
+
+    public String getUserEmail() {
+        return prefs.getString(KEY_USER_EMAIL, null);
+    }
+
+    // ==================== User Phone ====================
+    public void saveUserPhone(String phone) {
+        editor.putString(KEY_USER_PHONE, phone).apply();
+    }
+
+    public String getUserPhone() {
+        return prefs.getString(KEY_USER_PHONE, null);
+    }
+
+    // ==================== User Gender ====================
+    public void saveUserGender(String gender) {
+        editor.putString(KEY_USER_GENDER, gender).apply();
+    }
+
+    public String getUserGender() {
+        return prefs.getString(KEY_USER_GENDER, null);
+    }
+
+    // ==================== User Avatar ====================
+    public void saveUserAvatar(String avatarUrl) {
+        editor.putString(KEY_USER_AVATAR, avatarUrl).apply();
+    }
+
+    public String getUserAvatar() {
+        return prefs.getString(KEY_USER_AVATAR, null);
+    }
+
+    // ==================== Clear All ====================
+    public void clearAll() {
+        editor.clear().apply();
     }
 }

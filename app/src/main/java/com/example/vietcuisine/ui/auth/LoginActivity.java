@@ -22,6 +22,7 @@ import com.example.vietcuisine.data.model.LoginRequest;
 import com.example.vietcuisine.data.model.User;
 import com.example.vietcuisine.data.model.UserResponse;
 import com.example.vietcuisine.ui.main.MainActivity;
+import com.example.vietcuisine.utils.SharedPrefsManager;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -30,7 +31,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
-    
+
     private TextInputLayout emailLayout, passwordLayout;
     private TextInputEditText emailInput, passwordInput;
     private Button loginButton;
@@ -42,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        
+
         initViews();
         setupClickListeners();
         apiService = ApiClient.getClient().create(ApiService.class);
@@ -61,11 +62,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         loginButton.setOnClickListener(v -> attemptLogin());
-        
+
         registerLink.setOnClickListener(v -> {
             startActivity(new Intent(this, RegisterActivity.class));
         });
-        
+
         forgotPasswordLink.setOnClickListener(v -> {
             startActivity(new Intent(this, ForgotPasswordActivity.class));
         });
@@ -94,9 +95,9 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d("LoginActivity", "User_id: " + authResponse.getUser().getId());
                     Log.d("LoginActivity", "User_phone: " + authResponse.getUser().getPhone());
                     Log.d("LoginActivity", "Account: " + authResponse.getAccount().getEmail() );
-                    
+
                     saveUserSession(authResponse);
-                    
+
                     // Fetch full user profile after login
                     fetchUserProfile();
                 } else {
@@ -147,19 +148,16 @@ public class LoginActivity extends AppCompatActivity {
     private void saveUserSession(AuthResponse authResponse) {
         SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        
-        // Save token
-        if (authResponse.getToken() != null) {
-            editor.putString("token", authResponse.getToken());
-        }
-        
+        SharedPrefsManager.getInstance().setAccessToken(authResponse.getToken());
+        Log.d("token login","login"+authResponse.getToken());
+
         // Try to get user information
         User user = authResponse.getUser();
         Account account = authResponse.getAccount();
-        
+
         if (user != null) {
             // Full user object available
-            editor.putString("user_id", user.getId());
+            SharedPrefsManager.getInstance().saveUserId(user.getId());
             editor.putString("user_name", user.getName());
             editor.putString("user_email", user.getEmail());
         } else if (account != null) {
@@ -167,13 +165,13 @@ public class LoginActivity extends AppCompatActivity {
             editor.putString("account_id", account.getId());
             editor.putString("user_email", account.getEmail());
             editor.putString("user_role", account.getRole());
-            
+
             // Save user ID if available
             String userId = account.getUserId();
             if (userId != null) {
                 editor.putString("user_id", userId);
             }
-            
+
             // If account has populated user object
             User accountUser = account.getUser();
             if (accountUser != null) {
@@ -183,10 +181,10 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         }
-        
+
         editor.putBoolean("is_logged_in", true);
         editor.apply();
-        
+
         Log.d("LoginActivity", "User session saved successfully");
     }
 
@@ -204,7 +202,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     Log.e("LoginActivity", "Failed to fetch user profile: " + response.message());
                 }
-                
+
                 // Navigate to main regardless of profile fetch result
                 Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
                 navigateToMain();
@@ -223,7 +221,7 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUserSession(User user) {
         SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        
+
         if (user.getId() != null) {
             editor.putString("user_id", user.getId());
         }
@@ -242,7 +240,7 @@ public class LoginActivity extends AppCompatActivity {
         if (user.getAvatar() != null) {
             editor.putString("user_avatar", user.getAvatar());
         }
-        
+
         editor.apply();
         Log.d("LoginActivity", "User session updated with full profile");
     }
