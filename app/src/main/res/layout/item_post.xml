@@ -143,7 +143,60 @@
                 android:tint="@color/text_secondary" />
 
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/commentSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:padding="8dp">
 
+            <!-- ✅ Sửa chỗ này: EditText + Gửi là 1 hàng -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <EditText
+                    android:id="@+id/commentEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Nhập bình luận..."
+                    android:background="@drawable/edit_text_bg"
+                    android:padding="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/sendCommentButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_send"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Gửi" />
+            </LinearLayout>
+
+            <!-- ✅ RecyclerView hiển thị 5 bình luận mới nhất -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/commentRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false" />
+
+            <!-- ✅ Nút Xem thêm -->
+            <Button
+                android:id="@+id/showMoreCommentsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Xem thêm bình luận"
+                android:visibility="gone"
+                android:layout_gravity="end"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

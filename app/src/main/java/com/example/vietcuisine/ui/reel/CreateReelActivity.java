@@ -128,7 +128,7 @@ public class CreateReelActivity extends AppCompatActivity {
 
         // Gọi API
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        apiService.addReel("Bearer " + token, captionPart, videoPart)
+        apiService.addReel(captionPart, videoPart)
                 .enqueue(new Callback<ApiResponse>() {
                     @Override
                     public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {

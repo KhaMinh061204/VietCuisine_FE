@@ -79,7 +79,7 @@ public class ReelsFragment extends Fragment implements ReelAdapter.OnReelInterac
     }
 
     private void loadReels() {
-        apiService.getAllReels("Bearer "+token).enqueue(new Callback<ReelResponse>() {
+        apiService.getAllReels().enqueue(new Callback<ReelResponse>() {
             @Override
             public void onResponse(@NonNull Call<ReelResponse> call, @NonNull Response<ReelResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -107,7 +107,7 @@ public class ReelsFragment extends Fragment implements ReelAdapter.OnReelInterac
             Toast.makeText(requireContext(), "Bạn chưa đăng nhập", Toast.LENGTH_SHORT).show();
             return;
         }
-        apiService.toggleLike("Bearer " + token,new LikeRequest("reels",reel.getId())).enqueue(new Callback<ApiResponse>() {
+        apiService.toggleLike(new LikeRequest("reels",reel.getId())).enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
                 Log.d("respose api like","response like"+response);

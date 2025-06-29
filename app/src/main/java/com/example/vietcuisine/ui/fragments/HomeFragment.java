@@ -33,6 +33,7 @@ import com.example.vietcuisine.ui.adapters.PostAdapter;
 import com.example.vietcuisine.ui.messages.MessageListActivity;
 import com.example.vietcuisine.ui.posts.PostDetailActivity;
 import com.example.vietcuisine.ui.comments.CommentsActivity;
+import com.example.vietcuisine.utils.SharedPrefsManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,8 +59,7 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        SharedPreferences prefs = requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE);
-        token = prefs.getString("token", null);
+        String token = SharedPrefsManager.getInstance().getAccessToken();
         Log.d("Token", "Loaded token: " + token);
 
         initViews(view);
@@ -88,7 +88,7 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
     private void setupRecyclerViews() {
         // Posts - Vertical
         postsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        postAdapter = new PostAdapter(posts, this);
+        postAdapter = new PostAdapter(getContext(),posts, this);
         postsRecyclerView.setAdapter(postAdapter);
     }
 
@@ -103,7 +103,7 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
 
     private void loadPosts() {
         // Backend returns posts array directly 
-        apiService.getAllPosts("Bearer "+token).enqueue(new Callback<List<Post>>() {
+        apiService.getAllPosts().enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 swipeRefreshLayout.setRefreshing(false);
@@ -137,12 +137,7 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
 
     @Override
     public void onLikeClick(Post post) {
-        if (token == null) {
-            Toast.makeText(requireContext(), "Bạn chưa đăng nhập", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        apiService.toggleLike("Bearer "+ token,new LikeRequest("posts",post.getId())).enqueue(new Callback<ApiResponse>() {
+        apiService.toggleLike(new LikeRequest("posts",post.getId())).enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 if (response.isSuccessful()) {

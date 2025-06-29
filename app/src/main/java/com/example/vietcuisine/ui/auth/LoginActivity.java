@@ -158,8 +158,8 @@ public class LoginActivity extends AppCompatActivity {
         if (user != null) {
             // Full user object available
             SharedPrefsManager.getInstance().saveUserId(user.getId());
-            editor.putString("user_name", user.getName());
-            editor.putString("user_email", user.getEmail());
+            SharedPrefsManager.getInstance().saveUserName(user.getName());
+            SharedPrefsManager.getInstance().saveUserEmail(user.getEmail());
         } else if (account != null) {
             // Only account info available
             editor.putString("account_id", account.getId());

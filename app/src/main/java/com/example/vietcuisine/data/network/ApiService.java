@@ -96,7 +96,7 @@ public interface ApiService {
 
     // Post endpoints
     @GET("posts")
-    Call<List<Post>> getAllPosts(@Header("Authorization") String token);
+    Call<List<Post>> getAllPosts();
     
     @GET("posts/my")
     Call<PostResponse> getMyPosts();
@@ -123,16 +123,14 @@ public interface ApiService {
     Call<ApiResponse> deletePost(@Path("id") String id);
       // Reel endpoints
     @GET("reel/all")
-    Call<ReelResponse> getAllReels(@Header("Authorization") String token);
+    Call<ReelResponse> getAllReels();
 
     @Multipart
     @POST("reel/add")
     Call<ApiResponse> addReel(
-            @Header("Authorization") String token,
             @Part("caption") RequestBody caption,
             @Part MultipartBody.Part video
     );
-
 
     @Multipart
     @PUT("reel/{id}")
@@ -148,7 +146,6 @@ public interface ApiService {
     // Like endpoints
     @POST("like")
     Call<ApiResponse> toggleLike(
-            @Header("Authorization") String token,
             @Body LikeRequest request);
     
     @GET("like")
@@ -163,7 +160,19 @@ public interface ApiService {
     
     @DELETE("comment/{id}")
     Call<ApiResponse> deleteComment(@Path("id") String id);
-    
+    @POST("report")
+    Call<ApiResponse> reportComment(@Body ReportRequest reportRequest);
+    @GET("comment")
+    Call<List<Comment>> getCommentsByTarget(
+            @Query("targetId") String targetId,
+            @Query("onModel") String onModel
+    );
+    @GET("comment/limit")
+    Call<List<Comment>> getCommentsByTargetLimit(
+            @Query("targetId") String targetId,
+            @Query("onModel") String onModel
+    );
+
     // Ingredient endpoints
     @GET("ingredient/all")
     Call<IngredientResponse> getAllIngredients();

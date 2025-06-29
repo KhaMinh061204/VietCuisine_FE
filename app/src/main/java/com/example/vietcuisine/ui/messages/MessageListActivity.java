@@ -1,5 +1,7 @@
 package com.example.vietcuisine.ui.messages;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageButton;
@@ -35,7 +37,10 @@ public class MessageListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_list);
-        currentUserId = SharedPrefsManager.getInstance().getUserId();
+//        SharedPreferences prefs = getSharedPreferences("user_session", Context.MODE_PRIVATE);
+//        currentUserId = prefs.getString("user_id", null);
+        currentUserId= SharedPrefsManager.getInstance().getUserId();
+        Log.d("currentUser","userId"+currentUserId);
         recyclerViewUsers = findViewById(R.id.recyclerViewUsers);
         recyclerViewUsers.setLayoutManager(new LinearLayoutManager(this));
 
@@ -48,9 +53,11 @@ public class MessageListActivity extends AppCompatActivity {
     }
 
     private void fetchConversations() {
+        Log.d("UserId message","message"+currentUserId);
         apiService.getConversations(currentUserId).enqueue(new Callback<List<MessageUser>>() {
             @Override
             public void onResponse(Call<List<MessageUser>> call, Response<List<MessageUser>> response) {
+                Log.d("Response mes","mes"+response);
                 if (response.isSuccessful() && response.body() != null) {
                     for (MessageUser user : response.body()) {
                         Log.d("MessageListActivity", "User: " + user.getName() + " - ID: " + user.getUserId());
@@ -65,7 +72,8 @@ public class MessageListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<MessageUser>> call, Throwable t) {
-                Toast.makeText(MessageListActivity.this, "Lỗi mạng", Toast.LENGTH_SHORT).show();
+                Log.e("MessageListActivity", "Lỗi mạng: " + t.getMessage(), t);
+                Toast.makeText(MessageListActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
