@@ -2,17 +2,17 @@ package com.example.vietcuisine.data.model;
 
 public class UpdateProfileRequest {
     private String name;
-    private String phone;
+    private String email;
     private String gender;
-    private String bio;
+    private String phone;
+    private String avatar;
 
-    public UpdateProfileRequest() {}
-
-    public UpdateProfileRequest(String name, String phone, String gender, String bio) {
+    public UpdateProfileRequest(String name, String email, String gender, String phone, String avatar) {
         this.name = name;
-        this.phone = phone;
+        this.email = email;
         this.gender = gender;
-        this.bio = bio;
+        this.phone = phone;
+        this.avatar = avatar;
     }
 
     // Getters
@@ -28,8 +28,8 @@ public class UpdateProfileRequest {
         return gender;
     }
 
-    public String getBio() {
-        return bio;
+    public String getEmail() {
+        return email;
     }
 
     // Setters
@@ -45,7 +45,7 @@ public class UpdateProfileRequest {
         this.gender = gender;
     }
 
-    public void setBio(String bio) {
-        this.bio = bio;
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

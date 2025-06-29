@@ -189,14 +189,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void fetchUserProfile() {
-        apiService.getUserProfile().enqueue(new Callback<UserResponse>() {
+        apiService.getUserProfile().enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    UserResponse userResponse = response.body();
-                    if (userResponse.getUser() != null) {
+                    User userResponse = response.body();
+                    if (userResponse != null) {
                         // Update user session with full user info
-                        updateUserSession(userResponse.getUser());
+                        updateUserSession(userResponse);
                         Log.d("LoginActivity", "User profile fetched successfully");
                     }
                 } else {
@@ -209,7 +209,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 Log.e("LoginActivity", "Error fetching user profile: " + t.getMessage());
                 // Navigate to main even if profile fetch fails
                 Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();

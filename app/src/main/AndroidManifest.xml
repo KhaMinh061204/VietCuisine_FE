@@ -100,7 +100,9 @@
             android:name=".ui.profile.ProfileActivity"
             android:exported="false"
             android:theme="@style/Theme.VietCuisine.NoActionBar" />
-            
+
+        <activity android:name=".ui.profile.EditProfileActivity" />
+
         <!-- Order Activity -->
         <activity
             android:name=".ui.order.OrderActivity"

@@ -3,6 +3,7 @@ package com.example.vietcuisine.ui.fragments;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import com.example.vietcuisine.data.model.RecipeResponse;
 import com.example.vietcuisine.data.model.ApiResponse;
 import com.example.vietcuisine.ui.adapters.ProfileRecipeAdapter;
 import com.example.vietcuisine.ui.auth.LoginActivity;
+import com.example.vietcuisine.ui.profile.EditProfileActivity;
 import com.example.vietcuisine.ui.recipe.RecipeDetailActivity;
 import com.google.android.material.tabs.TabLayout;
 
@@ -137,7 +139,16 @@ public class ProfileFragment extends Fragment {
         popup.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.menu_edit_profile) {
-                showError("Chức năng chỉnh sửa hồ sơ đang được phát triển");
+                Intent intent = new Intent(getContext(), EditProfileActivity.class);
+
+                // Nếu bạn muốn truyền dữ liệu người dùng qua
+                intent.putExtra("name", currentUser.getName());
+                intent.putExtra("email", currentUser.getEmail());
+                intent.putExtra("phone", currentUser.getPhone());
+                intent.putExtra("gender", currentUser.getGender());
+                intent.putExtra("avatar", currentUser.getAvatar());
+
+                startActivity(intent);
                 return true;
             } else if (itemId == R.id.menu_settings) {
                 showError("Chức năng cài đặt đang được phát triển");
@@ -153,17 +164,18 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadUserProfile() {
-        apiService.getUserProfile().enqueue(new Callback<UserResponse>() {
+        apiService.getUserProfile().enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    currentUser = response.body().getUser();
+
+                    currentUser = response.body();
                     updateUI();
                 }
             }
 
             @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 showError("Lỗi tải thông tin người dùng: " + t.getMessage());
             }
         });
