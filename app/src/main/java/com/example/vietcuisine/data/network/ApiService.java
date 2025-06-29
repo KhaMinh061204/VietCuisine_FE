@@ -24,7 +24,7 @@ public interface ApiService {
     Call<User> getUserProfile();
     
     @PUT("auth/update-profile")
-    Call<UserResponse> updateProfile(@Body UpdateProfileRequest request);
+    Call<User> updateProfile(@Body UpdateProfileRequest request);
     
     @POST("auth/forgot-password")
     Call<ApiResponse> forgotPassword(@Body ForgotPasswordRequest request);

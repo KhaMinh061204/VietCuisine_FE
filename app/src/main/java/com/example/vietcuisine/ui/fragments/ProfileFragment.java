@@ -29,6 +29,7 @@ import com.example.vietcuisine.data.model.RecipeResponse;
 import com.example.vietcuisine.data.model.ApiResponse;
 import com.example.vietcuisine.ui.adapters.ProfileRecipeAdapter;
 import com.example.vietcuisine.ui.auth.LoginActivity;
+import com.example.vietcuisine.ui.profile.EditProfileActivity;
 import com.example.vietcuisine.ui.recipe.RecipeDetailActivity;
 import com.google.android.material.tabs.TabLayout;
 
@@ -138,7 +139,16 @@ public class ProfileFragment extends Fragment {
         popup.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.menu_edit_profile) {
-                showError("Chức năng chỉnh sửa hồ sơ đang được phát triển");
+                Intent intent = new Intent(getContext(), EditProfileActivity.class);
+
+                // Nếu bạn muốn truyền dữ liệu người dùng qua
+                intent.putExtra("name", currentUser.getName());
+                intent.putExtra("email", currentUser.getEmail());
+                intent.putExtra("phone", currentUser.getPhone());
+                intent.putExtra("gender", currentUser.getGender());
+                intent.putExtra("avatar", currentUser.getAvatar());
+
+                startActivity(intent);
                 return true;
             } else if (itemId == R.id.menu_settings) {
                 showError("Chức năng cài đặt đang được phát triển");
