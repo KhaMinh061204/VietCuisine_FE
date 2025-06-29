@@ -1,53 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/background_color">
 
-    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/primary_color"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <ImageButton
-            android:id="@+id/backButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Back"
-            android:src="@drawable/ic_back"
-            android:tint="@color/white" />
+        <!-- Header -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@android:color/white"
+            android:elevation="4dp">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/poppins_semibold"
-            android:gravity="center"
-            android:text="Chỉnh sửa hồ sơ"
-            android:textColor="@color/white"
-            android:textSize="18sp" />
+            <ImageView
+                android:id="@+id/backButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_back"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/text_primary" />
 
-        <View
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="Hồ sơ"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        <!-- Profile Form -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
+
+            <!-- Avatar -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingBottom="24dp">
+
+                <ImageView
+                    android:id="@+id/avatarImageView"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/ic_avatar_placeholder"
+                    android:background="@drawable/circle_background"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Avatar"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chạm để thay đổi ảnh"
+                    android:textColor="@color/primary_color"
+                    android:textSize="14sp"
+                    android:paddingTop="8dp"/>
+            </LinearLayout>
 
             <!-- Name Input -->
             <com.google.android.material.textfield.TextInputLayout
@@ -60,10 +88,24 @@
                     android:id="@+id/nameInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_regular"
                     android:hint="Họ và tên"
                     android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Email Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/emailInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"
+                    android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Phone Input -->
@@ -77,30 +119,26 @@
                     android:id="@+id/phoneInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_regular"
                     android:hint="Số điện thoại"
                     android:inputType="phone"
                     android:textSize="16sp" />
-
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Email Input -->
-            <com.google.android.material.textfield.TextInputLayout
+            <!-- Gender Spinner -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Giới tính"
+                android:textSize="16sp"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"/>
+
+            <Spinner
+                android:id="@+id/genderSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/emailInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_regular"
-                    android:hint="Email"
-                    android:inputType="textEmailAddress"
-                    android:textSize="16sp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+                android:spinnerMode="dropdown" />
 
             <!-- Save Button -->
             <com.google.android.material.button.MaterialButton
@@ -108,13 +146,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/primary_color"
-                android:fontFamily="@font/poppins_semibold"
                 android:text="Lưu thay đổi"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 
         </LinearLayout>
-
-    </ScrollView>
-
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>
