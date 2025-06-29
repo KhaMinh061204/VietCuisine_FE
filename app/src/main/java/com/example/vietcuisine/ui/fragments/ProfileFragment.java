@@ -3,6 +3,7 @@ package com.example.vietcuisine.ui.fragments;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -153,17 +154,18 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadUserProfile() {
-        apiService.getUserProfile().enqueue(new Callback<UserResponse>() {
+        apiService.getUserProfile().enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    currentUser = response.body().getUser();
+
+                    currentUser = response.body();
                     updateUI();
                 }
             }
 
             @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 showError("Lỗi tải thông tin người dùng: " + t.getMessage());
             }
         });
