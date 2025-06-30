@@ -2,6 +2,7 @@ package com.example.vietcuisine.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -74,10 +75,14 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 setLoading(false);
                 if (response.isSuccessful()) {
                     Toast.makeText(ForgotPasswordActivity.this, "OTP đã được gửi đến email của bạn", Toast.LENGTH_SHORT).show();
+
+                    Log.d("OTP", "Response thành công. Chuyển sang VerifyOtpActivity");
+
                     Intent intent = new Intent(ForgotPasswordActivity.this, VerifyOtpActivity.class);
                     intent.putExtra("email", email);
                     startActivity(intent);
                 } else {
+                    Log.e("OTP", "Response lỗi: " + response.code());
                     Toast.makeText(ForgotPasswordActivity.this, "Gửi OTP thất bại", Toast.LENGTH_SHORT).show();
                 }
             }

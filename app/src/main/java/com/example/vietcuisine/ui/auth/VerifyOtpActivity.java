@@ -73,7 +73,8 @@ public class VerifyOtpActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Toast.makeText(VerifyOtpActivity.this, "Xác thực thành công!", Toast.LENGTH_SHORT).show();
                     // Navigate to reset password activity or login
-                    Intent intent = new Intent(VerifyOtpActivity.this, LoginActivity.class);
+                    Intent intent = new Intent(VerifyOtpActivity.this, ResetPasswordActivity.class);
+                    intent.putExtra("email", email);
                     startActivity(intent);
                     finish();
                 } else {
