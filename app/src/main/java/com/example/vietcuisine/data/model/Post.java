@@ -5,7 +5,7 @@ public class Post {
     private User userId;
     private String caption;
     private String image;
-    private String recipeId;
+    private Recipe recipeId;
     private int likesCount;
     private int commentsCount;
     private boolean isLiked;
@@ -15,7 +15,7 @@ public class Post {
     // Constructors
     public Post() {}
 
-    public Post(User userId, String caption, String image, String recipeId) {
+    public Post(User userId, String caption, String image, Recipe recipeId) {
         this.userId = userId;
         this.caption = caption;
         this.image = image;
@@ -35,8 +35,8 @@ public class Post {
     public String getImage() { return image; }
     public void setImage(String image) { this.image = image; }
 
-    public String getRecipeId() { return recipeId; }
-    public void setRecipeId(String recipeId) { this.recipeId = recipeId; }
+    public Recipe getRecipeId() { return recipeId; }
+    public void setRecipeId(Recipe recipeId) { this.recipeId = recipeId; }
 
     public int getLikesCount() { return likesCount; }
     public void setLikesCount(int likesCount) { this.likesCount = likesCount; }    public int getCommentsCount() { return commentsCount; }
