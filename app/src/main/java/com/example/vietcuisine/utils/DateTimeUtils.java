@@ -1,21 +1,29 @@
 package com.example.vietcuisine.utils;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 public class DateTimeUtils {
-    public static String formatToVietnamTime(String isoTime) {
+    public static String formatToVietnamTime(String isoOrMillis) {
         try {
-            OffsetDateTime utcDateTime = OffsetDateTime.parse(isoTime);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-            return utcDateTime
-                    .atZoneSameInstant(ZoneId.of("Asia/Ho_Chi_Minh"))
-                    .format(formatter);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+                    .withZone(ZoneId.of("Asia/Ho_Chi_Minh"));
+
+            // Nếu là timestamp dạng số
+            if (isoOrMillis.matches("\\d+")) {
+                long millis = Long.parseLong(isoOrMillis);
+                Instant instant = Instant.ofEpochMilli(millis);
+                return formatter.format(instant);
+            }
+
+            // Nếu là chuỗi ISO
+            OffsetDateTime utcDateTime = OffsetDateTime.parse(isoOrMillis);
+            ZonedDateTime vietnamTime = utcDateTime.atZoneSameInstant(ZoneId.of("Asia/Ho_Chi_Minh"));
+            return vietnamTime.format(formatter);
+
         } catch (Exception e) {
             e.printStackTrace();
             return "Không rõ thời gian";
         }
     }
 }
-

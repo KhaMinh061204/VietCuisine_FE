@@ -25,6 +25,7 @@ import com.example.vietcuisine.data.network.ApiClient;
 import com.example.vietcuisine.data.network.ApiService;
 import com.example.vietcuisine.ui.adapters.ReelAdapter;
 import com.example.vietcuisine.ui.comments.CommentsActivity;
+import com.example.vietcuisine.ui.reel.ReelCommentBottomSheet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,10 +48,6 @@ public class ReelsFragment extends Fragment implements ReelAdapter.OnReelInterac
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_reels, container, false);
         reelsViewPager = view.findViewById(R.id.reelsViewPager);
-
-        SharedPreferences prefs = requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE);
-        token = prefs.getString("token", null);
-        Log.d("Token", "Loaded token: " + token);
 
         setupViewPager();
         apiService = ApiClient.getClient().create(ApiService.class);
@@ -103,10 +100,6 @@ public class ReelsFragment extends Fragment implements ReelAdapter.OnReelInterac
 
     @Override
     public void onLikeClick(Reel reel, int pos) {
-        if (token == null) {
-            Toast.makeText(requireContext(), "Bạn chưa đăng nhập", Toast.LENGTH_SHORT).show();
-            return;
-        }
         apiService.toggleLike(new LikeRequest("reels",reel.getId())).enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
@@ -133,11 +126,10 @@ public class ReelsFragment extends Fragment implements ReelAdapter.OnReelInterac
 
     @Override
     public void onCommentClick(Reel reel, int pos) {
-        Intent intent = new Intent(getContext(), CommentsActivity.class);
-        intent.putExtra("target_id", reel.getId());
-        intent.putExtra("target_type", "reels");
-        startActivity(intent);
+        ReelCommentBottomSheet bottomSheet = new ReelCommentBottomSheet(requireContext(), reel.getId());
+        bottomSheet.show();
     }
+
 
     @Override
     public void onShareClick(Reel reel, int pos) {

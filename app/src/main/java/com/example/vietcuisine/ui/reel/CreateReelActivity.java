@@ -16,6 +16,7 @@ import com.example.vietcuisine.data.model.ApiResponse;
 import com.example.vietcuisine.data.network.ApiClient;
 import com.example.vietcuisine.data.network.ApiService;
 import com.example.vietcuisine.utils.FileUtils;
+import com.example.vietcuisine.utils.SharedPrefsManager;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;
@@ -98,8 +99,7 @@ public class CreateReelActivity extends AppCompatActivity {
         }
 
         // Lấy token từ SharedPreferences
-        String token = getSharedPreferences("user_session", MODE_PRIVATE)
-                .getString("token", null);
+        String token = SharedPrefsManager.getInstance().getAccessToken();
 
         if (token == null) {
             Toast.makeText(this, "Bạn chưa đăng nhập", Toast.LENGTH_SHORT).show();

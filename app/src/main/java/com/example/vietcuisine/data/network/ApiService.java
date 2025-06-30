@@ -154,10 +154,10 @@ public interface ApiService {
     // Comment endpoints
     @POST("comment")
     Call<ApiResponse> createComment(@Body CommentRequest request);
-    
-    @GET("comment")
-    Call<CommentResponse> getComments(@Query("targetId") String targetId, @Query("onModel") String onModel);
-    
+
+    @GET("/comment")
+    Call<List<Comment>> getComments(@Query("targetId") String targetId, @Query("onModel") String onModel);
+
     @DELETE("comment/{id}")
     Call<ApiResponse> deleteComment(@Path("id") String id);
     @POST("report")

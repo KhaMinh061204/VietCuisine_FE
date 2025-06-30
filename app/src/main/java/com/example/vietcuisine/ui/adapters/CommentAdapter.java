@@ -3,6 +3,7 @@ package com.example.vietcuisine.ui.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 
@@ -49,6 +50,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         notifyDataSetChanged();
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
     @NonNull
     @Override
     public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -59,6 +64,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         Comment comment = comments.get(position);
+        Log.d("COMMENT_ADAPTER", "Comment nội dung: " + comment.getContent());
+
 
         // Hiển thị avatar và tên
         if (comment.getUserId() != null) {
