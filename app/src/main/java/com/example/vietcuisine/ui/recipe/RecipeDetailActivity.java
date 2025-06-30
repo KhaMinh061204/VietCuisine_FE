@@ -147,11 +147,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         // Load recipe image
         if (recipe.getImage() != null && !recipe.getImage().isEmpty()) {
             Glide.with(this)
-<<<<<<< HEAD
                     .load(recipe.getImage())
-=======
-                    .load(imageUrl)
->>>>>>> e504802de0d5da16d8c360b4dbbe45f42e5c4f44
                     .placeholder(R.drawable.ic_avatar_placeholder)
                     .error(R.drawable.ic_avatar_placeholder)
                     .into(recipeImage);
