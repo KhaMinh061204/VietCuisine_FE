@@ -1,7 +1,10 @@
 package com.example.vietcuisine.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Ingredient {
     private String _id;
+    @SerializedName("name")
     private String name;
     private String unit;
     private double unitPrice;

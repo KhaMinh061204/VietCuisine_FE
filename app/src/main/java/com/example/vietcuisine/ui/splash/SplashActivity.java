@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.vietcuisine.R;
 import com.example.vietcuisine.ui.auth.LoginActivity;
 import com.example.vietcuisine.ui.main.MainActivity;
+import com.example.vietcuisine.utils.SharedPrefsManager;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -22,9 +23,7 @@ public class SplashActivity extends AppCompatActivity {
     }
     
     private void checkLoginStatus() {
-        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
-        boolean isLoggedIn = prefs.getBoolean("is_logged_in", false);
-        
+        boolean isLoggedIn = SharedPrefsManager.getInstance().isLoggedIn();
         Intent intent;
         if (isLoggedIn) {
             intent = new Intent(this, MainActivity.class);

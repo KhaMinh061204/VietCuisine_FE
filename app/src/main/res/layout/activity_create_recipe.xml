@@ -65,7 +65,7 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">                    
+                    android:layout_height="match_parent">
                     <ImageView
                         android:id="@+id/recipeImageView"
                         android:layout_width="match_parent"
@@ -78,7 +78,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:background="@color/card_background">
 
                         <ImageView
                             android:layout_width="48dp"
@@ -121,7 +122,8 @@
                     android:fontFamily="@font/poppins_regular"
                     android:hint="Tên món ăn"
                     android:inputType="text"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:background="@drawable/bg_input_field"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -146,7 +148,8 @@
                     android:hint="Mô tả món ăn"
                     android:inputType="textMultiLine"
                     android:lines="3"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:background="@drawable/bg_input_field"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -170,7 +173,8 @@
                     android:fontFamily="@font/poppins_regular"
                     android:hint="Danh mục"
                     android:inputType="none"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:background="@drawable/bg_input_field"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -182,34 +186,9 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/prepTimeLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    app:boxBackgroundMode="outline"
-                    app:boxCornerRadiusBottomEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:hintTextColor="@color/primary_color">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/prepTimeInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_regular"
-                        android:hint="Thời gian chuẩn bị (phút)"
-                        android:inputType="number"
-                        android:textSize="16sp" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/cookTimeLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     app:boxBackgroundMode="outline"
                     app:boxCornerRadiusBottomEnd="12dp"
@@ -225,33 +204,12 @@
                         android:fontFamily="@font/poppins_regular"
                         android:hint="Thời gian nấu (phút)"
                         android:inputType="number"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:background="@drawable/bg_input_field"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
-
-            <!-- Servings -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/servingsLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusTopStart="12dp"
-                app:hintTextColor="@color/primary_color">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/servingsInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_regular"
-                    android:hint="Số người ăn"
-                    android:inputType="number"
-                    android:textSize="16sp" />            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Nutrition Section -->
             <TextView
@@ -284,7 +242,8 @@
                         android:fontFamily="@font/poppins_regular"
                         android:hint="Calories"
                         android:inputType="number"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:background="@drawable/bg_input_field"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -302,7 +261,8 @@
                         android:fontFamily="@font/poppins_regular"
                         android:hint="Protein (g)"
                         android:inputType="numberDecimal"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:background="@drawable/bg_input_field"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -329,7 +289,8 @@
                         android:fontFamily="@font/poppins_regular"
                         android:hint="Carbs (g)"
                         android:inputType="numberDecimal"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:background="@drawable/bg_input_field"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -347,7 +308,8 @@
                         android:fontFamily="@font/poppins_regular"
                         android:hint="Fat (g)"
                         android:inputType="numberDecimal"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:background="@drawable/bg_input_field"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -357,7 +319,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -367,7 +328,7 @@
                     android:fontFamily="@font/poppins_semibold"
                     android:text="Nguyên liệu"
                     android:textColor="@color/text_primary"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/addIngredientButton"
@@ -378,7 +339,8 @@
                     android:padding="8dp"
                     android:text="+ Thêm"
                     android:textColor="@color/primary_color"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    />
 
             </LinearLayout>
 
@@ -403,7 +365,7 @@
                     android:fontFamily="@font/poppins_semibold"
                     android:text="Cách làm"
                     android:textColor="@color/text_primary"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/addStepButton"

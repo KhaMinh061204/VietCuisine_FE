@@ -127,6 +127,32 @@ public class RecipeDetailActivity extends AppCompatActivity {
         });
     }
 
+    private void loadIngredientsFromApi(String recipeId) {
+        apiService.getIngredientByRecipeId(recipeId).enqueue(new Callback<List<RecipeIngredient>>() {
+            @Override
+            public void onResponse(Call<List<RecipeIngredient>> call, Response<List<RecipeIngredient>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<RecipeIngredient> ingredients = response.body();
+                    Log.d("RECIPE Ingredient API", "Tải thành công " + ingredients.size() + " nguyên liệu");
+                    for (RecipeIngredient ing : ingredients) {
+                        Log.d("RECIPE Ingredient API", "- " + ing.getName() + ": " + ing.getQuantity());
+                    }
+
+                    ingredientAdapter.updateIngredients(ingredients);
+                } else {
+                    Log.e("RECIPE Ingredient API", "Thất bại: " + response.code());
+                    showError("Không tải được nguyên liệu");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<RecipeIngredient>> call, Throwable t) {
+                Log.e("RECIPE Ingredient API", "Lỗi kết nối", t);
+                showError("Lỗi khi tải nguyên liệu");
+            }
+        });
+    }
+
     private void displayRecipeData() {
         if (recipe == null) return;
 
@@ -154,11 +180,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
         displayNutritionInfo();
         
         // Load ingredients
-        if (recipe.getIngredients() != null && !recipe.getIngredients().isEmpty()) {
-            Log.d("RECIPE Ingredient", "Tên nguyên liệu: " + recipe.getIngredients());
-            ingredientAdapter.updateIngredients(recipe.getIngredients());
-        }
-        
+        loadIngredientsFromApi(recipeId);
+
         // Load steps
         if (recipe.getSteps() != null && !recipe.getSteps().isEmpty()) {
             stepAdapter.updateSteps(recipe.getSteps());

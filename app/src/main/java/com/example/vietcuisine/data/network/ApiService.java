@@ -60,18 +60,18 @@ public interface ApiService {
     Call<ApiResponse> addRecipe(
         @Part("title") RequestBody title,
         @Part("description") RequestBody description,
-        @Part("ingredients") RequestBody ingredients,
-        @Part("steps") RequestBody steps,
+        @Part List<MultipartBody.Part> ingredients,
+        @Part List<MultipartBody.Part> steps,
         @Part("categoriesId") RequestBody categoryId,
         @Part("cookingTime") RequestBody cookingTime,
-        @Part("servings") RequestBody servings,
         @Part("calories") RequestBody calories,
         @Part("protein") RequestBody protein,
         @Part("carbs") RequestBody carbs,
         @Part("fat") RequestBody fat,
         @Part MultipartBody.Part image
     );
-    
+    @GET("recipe/{id}/ingredients")
+    Call<List<RecipeIngredient>> getIngredientByRecipeId(@Path("id") String id);
     @PUT("recipe/{id}")
     Call<ApiResponse> updateRecipe(@Path("id") String id, @Body UpdateRecipeRequest request);
     
@@ -178,7 +178,7 @@ public interface ApiService {
     Call<IngredientResponse> getAllIngredients();
     
     @GET("ingredient/search")
-    Call<IngredientResponse> searchIngredients(@Query("q") String query);
+    Call<IngredientResponse> searchIngredients(@Query("keyword") String query);
     
     @GET("ingredient/{id}")
     Call<IngredientDetailResponse> getIngredientById(@Path("id") String id);

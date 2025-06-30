@@ -1,5 +1,7 @@
 package com.example.vietcuisine.ui.adapters;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,21 +35,44 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull StepViewHolder holder, int position) {
-        String step = steps.get(position);
-        holder.stepInput.setText(step);
-        
-        holder.stepInput.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                steps.set(position, holder.stepInput.getText().toString());
+        // Gỡ TextWatcher cũ nếu có (tránh bị nhân đôi)
+        if (holder.currentWatcher != null) {
+            holder.stepInput.removeTextChangedListener(holder.currentWatcher);
+        }
+
+        // Thiết lập dữ liệu hiện tại
+        holder.stepInput.setText(steps.get(position));
+
+        // Tạo TextWatcher mới
+        TextWatcher watcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-        });
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int adapterPosition = holder.getAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    steps.set(adapterPosition, s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        };
+
+        // Gán watcher và lưu tham chiếu
+        holder.stepInput.addTextChangedListener(watcher);
+        holder.currentWatcher = watcher;
 
         holder.removeButton.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onStepRemoved(position);
+                listener.onStepRemoved(holder.getAdapterPosition());
             }
         });
     }
+
 
     @Override
     public int getItemCount() {
@@ -57,6 +82,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
     static class StepViewHolder extends RecyclerView.ViewHolder {
         EditText stepInput;
         ImageButton removeButton;
+        TextWatcher currentWatcher;
 
         public StepViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -1,59 +1,40 @@
 package com.example.vietcuisine.ui.recipe;
 
-import static com.example.vietcuisine.utils.FileUtils.getFileFromUri;
-
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
+import android.os.*;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.example.vietcuisine.R;
-import com.example.vietcuisine.data.network.ApiClient;
-import com.example.vietcuisine.data.network.ApiService;
-import com.example.vietcuisine.data.model.Category;
-import com.example.vietcuisine.data.model.CategoryResponse;
-import com.example.vietcuisine.data.model.ApiResponse;
-import com.example.vietcuisine.ui.adapters.StepAdapter;
+import com.example.vietcuisine.data.model.*;
+import com.example.vietcuisine.data.network.*;
 import com.example.vietcuisine.ui.adapters.IngredientInputAdapter;
+import com.example.vietcuisine.ui.adapters.StepAdapter;
 import com.example.vietcuisine.utils.FileUtils;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
+import java.util.*;
+import okhttp3.*;
+import retrofit2.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CreateRecipeActivity extends AppCompatActivity {
-
     private static final int PICK_IMAGE_REQUEST = 1;
 
     private ImageView recipeImageView, backButton;
-    private TextInputEditText titleInput, descriptionInput, cookingTimeInput, servingsInput;
-    private TextInputEditText caloriesInput, proteinInput, carbsInput, fatInput;
+    private TextInputEditText titleInput, descriptionInput, cookingTimeInput, caloriesInput, proteinInput, carbsInput, fatInput;
     private AutoCompleteTextView categoryInput;
     private RecyclerView ingredientsRecyclerView, stepsRecyclerView;
     private TextView addIngredientButton, addStepButton;
@@ -62,12 +43,15 @@ public class CreateRecipeActivity extends AppCompatActivity {
 
     private IngredientInputAdapter ingredientInputAdapter;
     private StepAdapter stepAdapter;
-    private List<String> ingredients, steps;
+    private List<String> steps;
+    private List<IngredientInput> ingredients;
     private List<Category> categories;
     private Category selectedCategory;
     private Uri selectedImageUri;
 
     private ApiService apiService;
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable searchRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +71,6 @@ public class CreateRecipeActivity extends AppCompatActivity {
         titleInput = findViewById(R.id.titleInput);
         descriptionInput = findViewById(R.id.descriptionInput);
         cookingTimeInput = findViewById(R.id.cookTimeInput);
-        servingsInput = findViewById(R.id.servingsInput);
         caloriesInput = findViewById(R.id.caloriesInput);
         proteinInput = findViewById(R.id.proteinInput);
         carbsInput = findViewById(R.id.carbsInput);
@@ -100,11 +83,11 @@ public class CreateRecipeActivity extends AppCompatActivity {
         publishButton = findViewById(R.id.submitButton);
         progressBar = findViewById(R.id.progressBar);
         backButton = findViewById(R.id.backButton);
-
         ingredients = new ArrayList<>();
         steps = new ArrayList<>();
         categories = new ArrayList<>();
-        ingredients.add("");
+
+        ingredients.add(new IngredientInput("", ""));
         steps.add("");
     }
 
@@ -113,13 +96,14 @@ public class CreateRecipeActivity extends AppCompatActivity {
         stepsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         stepsRecyclerView.setAdapter(stepAdapter);
 
-        ingredientInputAdapter = new IngredientInputAdapter(ingredients, this::onIngredientRemoved);
+        ingredientInputAdapter = new IngredientInputAdapter(this, ingredients, this::onIngredientRemoved);
         ingredientsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         ingredientsRecyclerView.setAdapter(ingredientInputAdapter);
     }
 
     private void setupClickListeners() {
         backButton.setOnClickListener(v -> finish());
+
         recipeImageView.setOnClickListener(v -> openImagePicker());
 
         addStepButton.setOnClickListener(v -> {
@@ -128,7 +112,7 @@ public class CreateRecipeActivity extends AppCompatActivity {
         });
 
         addIngredientButton.setOnClickListener(v -> {
-            ingredients.add("");
+            ingredients.add(new IngredientInput("", ""));
             ingredientInputAdapter.notifyItemInserted(ingredients.size() - 1);
         });
 
@@ -158,21 +142,14 @@ public class CreateRecipeActivity extends AppCompatActivity {
         });
     }
 
-    private void showCategoryLoadError(String errorMessage) {
-        categoryInput.setEnabled(false);
-        categoryInput.setText("");
-        categoryInput.setHint("Không thể tải danh mục");
-        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
-    }
-
     private void setupCategoryDropdown() {
         categoryInput.setEnabled(true);
         categoryInput.setText("");
-        categoryInput.setHint("Chọn danh mục");
+        categoryInput.setHint("");
 
-        String[] categoryNames = new String[categories.size()];
-        for (int i = 0; i < categories.size(); i++) {
-            categoryNames[i] = categories.get(i).getName();
+        List<String> categoryNames = new ArrayList<>();
+        for (Category cat : categories) {
+            categoryNames.add(cat.getName());
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, categoryNames);
@@ -194,7 +171,6 @@ public class CreateRecipeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             selectedImageUri = data.getData();
             Glide.with(this).load(selectedImageUri).centerCrop().into(recipeImageView);
@@ -219,37 +195,34 @@ public class CreateRecipeActivity extends AppCompatActivity {
         if (!validateInputs()) return;
         setLoading(true);
 
-        // Tạo các phần dữ liệu dạng text
         RequestBody title = createPlainText(titleInput.getText().toString());
         RequestBody description = createPlainText(descriptionInput.getText().toString());
         RequestBody cookingTime = createPlainText(cookingTimeInput.getText().toString());
-        RequestBody servings = createPlainText(servingsInput.getText().toString());
         RequestBody calories = createPlainText(caloriesInput.getText().toString());
         RequestBody protein = createPlainText(proteinInput.getText().toString());
         RequestBody carbs = createPlainText(carbsInput.getText().toString());
         RequestBody fat = createPlainText(fatInput.getText().toString());
         RequestBody category = createPlainText(selectedCategory != null ? selectedCategory.getId() : "");
 
-        // Danh sách nguyên liệu
-        List<RequestBody> ingredientBodies = new ArrayList<>();
-        for (String i : ingredients)
-            if (!i.trim().isEmpty())
-                ingredientBodies.add(createPlainText(i.trim()));
+        List<MultipartBody.Part> ingredientParts = new ArrayList<>();
+        for (int i = 0; i < ingredients.size(); i++) {
+            IngredientInput ing = ingredients.get(i);
+            ingredientParts.add(MultipartBody.Part.createFormData("ingredients[" + i + "][ingredient]", ing.getIngredient()));
+            ingredientParts.add(MultipartBody.Part.createFormData("ingredients[" + i + "][quantity]", ing.getQuantity()));
+        }
 
-        // Danh sách bước nấu
-        List<RequestBody> stepBodies = new ArrayList<>();
-        for (String s : steps)
-            if (!s.trim().isEmpty())
-                stepBodies.add(createPlainText(s.trim()));
+        List<MultipartBody.Part> stepParts = new ArrayList<>();
+        for (int i = 0; i < steps.size(); i++) {
+            stepParts.add(MultipartBody.Part.createFormData("steps[" + i + "]", steps.get(i)));
+        }
 
-        // Tạo MultipartBody cho ảnh hoặc video (nếu có)
-        MultipartBody.Part mediaPart = null;
+        MultipartBody.Part image = null;
         if (selectedImageUri != null) {
             try {
-                File file = FileUtils.getFileFromUri(this, selectedImageUri, ".jpg"); // hoặc ".mp4"
-                String mimeType = getContentResolver().getType(selectedImageUri); // image/* hoặc video/*
+                File file = FileUtils.getFileFromUri(this, selectedImageUri, ".jpg");
+                String mimeType = getContentResolver().getType(selectedImageUri);
                 RequestBody mediaBody = RequestBody.create(MediaType.parse(mimeType), file);
-                mediaPart = MultipartBody.Part.createFormData("media", file.getName(), mediaBody); // "media" là tên field API mong đợi
+                image = MultipartBody.Part.createFormData("image", file.getName(), mediaBody);
             } catch (IOException e) {
                 Toast.makeText(this, "Lỗi xử lý file", Toast.LENGTH_SHORT).show();
                 setLoading(false);
@@ -257,22 +230,28 @@ public class CreateRecipeActivity extends AppCompatActivity {
             }
         }
 
-        // TODO: Gọi API ở đây, ví dụ:
-    /*
-    apiService.createRecipe(
-        title, description, cookingTime, servings, calories, protein, carbs, fat,
-        category, ingredientBodies, stepBodies, mediaPart
-    ).enqueue(new Callback<>() { ... });
-    */
+        apiService.addRecipe(title, description, ingredientParts, stepParts, category,
+                        cookingTime, calories, protein, carbs, fat, image)
+                .enqueue(new Callback<ApiResponse>() {
+                    @Override
+                    public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                        setLoading(false);
+                        if (response.isSuccessful() && response.body() != null) {
+                            Toast.makeText(CreateRecipeActivity.this, "Tạo công thức thành công!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(CreateRecipeActivity.this, "Lỗi khi tạo công thức!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
-        setLoading(false);
-        Toast.makeText(this, "Công thức đã được tạo thành công!", Toast.LENGTH_SHORT).show();
-        finish();
+                    @Override
+                    public void onFailure(Call<ApiResponse> call, Throwable t) {
+                        setLoading(false);
+                        Toast.makeText(CreateRecipeActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
-    private RequestBody createPlainText(String value) {
-        return RequestBody.create(MediaType.parse("text/plain"), value);
-    }
     private boolean validateInputs() {
         if (titleInput.getText().toString().trim().isEmpty()) {
             titleInput.setError("Tên công thức không được để trống");
@@ -289,18 +268,14 @@ public class CreateRecipeActivity extends AppCompatActivity {
             return false;
         }
 
-        if (servingsInput.getText().toString().trim().isEmpty()) {
-            servingsInput.setError("Số phần ăn không được để trống");
-            return false;
-        }
-
         if (selectedCategory == null) {
             categoryInput.setError("Vui lòng chọn danh mục");
             Toast.makeText(this, "Vui lòng chọn danh mục cho công thức", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        boolean hasIngredient = ingredients.stream().anyMatch(i -> !i.trim().isEmpty());
+        boolean hasIngredient = ingredients.stream()
+                .anyMatch(i -> !i.getIngredient().trim().isEmpty() || !i.getQuantity().trim().isEmpty());
         boolean hasStep = steps.stream().anyMatch(s -> !s.trim().isEmpty());
 
         if (!hasIngredient) {
@@ -320,4 +295,41 @@ public class CreateRecipeActivity extends AppCompatActivity {
         progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
         publishButton.setEnabled(!loading);
     }
+
+    private RequestBody createPlainText(String value) {
+        return RequestBody.create(MediaType.parse("text/plain"), value);
+    }
+
+    private void searchIngredient(String query) {
+        apiService.searchIngredients(query).enqueue(new Callback<IngredientResponse>() {
+            @Override
+            public void onResponse(Call<IngredientResponse> call, Response<IngredientResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isStatus()) {
+                    List<String> names = new ArrayList<>();
+                    for (Ingredient ing : response.body().getIngredients()) {
+                        names.add(ing.getName());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                            CreateRecipeActivity.this,
+                            android.R.layout.simple_dropdown_item_1line,
+                            names
+                    );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<IngredientResponse> call, Throwable t) {
+                Log.e("SearchIngredient", "Lỗi API: " + t.getMessage());
+            }
+        });
+    }
+
+    private void showCategoryLoadError(String errorMessage) {
+        categoryInput.setEnabled(false);
+        categoryInput.setText("");
+        categoryInput.setHint("Không thể tải danh mục");
+        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+    }
+
 }
