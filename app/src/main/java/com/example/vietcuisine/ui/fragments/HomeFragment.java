@@ -25,6 +25,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.vietcuisine.R;
 import com.example.vietcuisine.data.model.LikeRequest;
+import com.example.vietcuisine.data.model.Recipe;
 import com.example.vietcuisine.data.network.ApiClient;
 import com.example.vietcuisine.data.network.ApiService;
 import com.example.vietcuisine.data.model.Post;
@@ -33,6 +34,7 @@ import com.example.vietcuisine.ui.adapters.PostAdapter;
 import com.example.vietcuisine.ui.messages.MessageListActivity;
 import com.example.vietcuisine.ui.posts.PostDetailActivity;
 import com.example.vietcuisine.ui.comments.CommentsActivity;
+import com.example.vietcuisine.ui.recipe.RecipeDetailActivity;
 import com.example.vietcuisine.utils.SharedPrefsManager;
 
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
     private ApiService apiService;
     private List<Post> posts = new ArrayList<>();
     private String token;
+    private static final int CREATE_POST_REQUEST_CODE = 100;
 
 
     @Nullable
@@ -127,6 +130,11 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
         });
     }
 
+    public void refreshData() {
+        if (isAdded()) {
+            loadData();
+        }
+    }
     @Override
     public void onPostClick(Post post) {
         // Navigate to post details
@@ -163,6 +171,18 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostInteract
         intent.putExtra("target_id", post.getId());
         intent.putExtra("target_type", "posts");
         startActivity(intent);
+    }
+
+    @Override
+    public void onDetailClick(Post post) {
+        Recipe recipe = post.getRecipeId();
+        if (recipe != null && recipe.getId() != null && !recipe.getId().isEmpty()) {
+            Intent intent = new Intent(getContext(), RecipeDetailActivity.class);
+            intent.putExtra("recipe_id", recipe.getId());
+            startActivity(intent);
+        } else {
+            Toast.makeText(getContext(), "Bài viết không có liên kết đến công thức", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showError(String message) {

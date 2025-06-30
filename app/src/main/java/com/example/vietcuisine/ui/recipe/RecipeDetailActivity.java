@@ -141,13 +141,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
         
         // Load recipe image
         if (recipe.getImage() != null && !recipe.getImage().isEmpty()) {
-            String imageUrl = ApiClient.getImageUrl(recipe.getImage());
-            Log.d(TAG, "Loading image from URL: " + imageUrl);
             Glide.with(this)
-                .load(imageUrl)
-                .placeholder(R.drawable.ic_avatar_placeholder)
-                .error(R.drawable.ic_avatar_placeholder)
-                .into(recipeImage);
+                    .load(recipe.getImage())
+                    .placeholder(R.drawable.ic_avatar_placeholder)
+                    .error(R.drawable.ic_avatar_placeholder)
+                    .into(recipeImage);
         }
         
         // Nutrition information (if TextViews exist)

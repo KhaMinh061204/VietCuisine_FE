@@ -9,6 +9,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.PopupMenu;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private BottomNavigationView bottomNavigation;
     private FloatingActionButton fabAdd;
-
+    private static final int CREATE_POST_REQUEST_CODE = 100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +57,26 @@ public class MainActivity extends AppCompatActivity {
     }    private void initViews() {
         bottomNavigation = findViewById(R.id.bottomNavigation);
         fabAdd = findViewById(R.id.fabAdd);
-    }private void setupBottomNavigation() {
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CREATE_POST_REQUEST_CODE && resultCode == RESULT_OK) {
+            // Khi tạo bài viết thành công, load lại HomeFragment
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+            if (currentFragment instanceof HomeFragment) {
+                ((HomeFragment) currentFragment).refreshData();
+            } else {
+                // Load HomeFragment nếu chưa hiển thị
+                bottomNavigation.setSelectedItemId(R.id.nav_home);
+            }
+        }
+    }
+
+
+    private void setupBottomNavigation() {
         bottomNavigation.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
             int itemId = item.getItemId();
@@ -128,15 +148,16 @@ public class MainActivity extends AppCompatActivity {
             
             if (itemId == R.id.menu_create_recipe) {
                 intent = new Intent(MainActivity.this, CreateRecipeActivity.class);
+                startActivity(intent);
             } else if (itemId == R.id.menu_create_post) {
                 intent = new Intent(MainActivity.this, CreatePostActivity.class);
+                startActivityForResult(intent, CREATE_POST_REQUEST_CODE);
             } else if (itemId == R.id.menu_create_reel) {
                 intent = new Intent(MainActivity.this, CreateReelActivity.class);
-            }
-            
-            if (intent != null) {
                 startActivity(intent);
             }
+            
+
             return true;
         });
         

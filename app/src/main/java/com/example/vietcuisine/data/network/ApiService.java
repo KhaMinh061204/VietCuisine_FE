@@ -106,8 +106,8 @@ public interface ApiService {
     
     @Multipart
     @POST("posts")
-    Call<ApiResponse> createPost(
-        @Part("content") RequestBody content,
+    Call<PostDetailResponse> createPost(
+        @Part("caption") RequestBody caption,
         @Part MultipartBody.Part image
     );
     

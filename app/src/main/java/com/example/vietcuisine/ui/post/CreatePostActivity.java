@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.vietcuisine.R;
 import com.example.vietcuisine.data.model.ApiResponse;
+import com.example.vietcuisine.data.model.PostDetailResponse;
 import com.example.vietcuisine.data.network.ApiClient;
 import com.example.vietcuisine.data.network.ApiService;
 import com.example.vietcuisine.utils.FileUtils;
@@ -88,18 +89,19 @@ public class CreatePostActivity extends AppCompatActivity {
             RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
             MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", imageFile.getName(), reqFile);
 
-            RequestBody contentBody = RequestBody.create(MediaType.parse("text/plain"), caption);
+            RequestBody captionBody = RequestBody.create(MediaType.parse("text/plain"), caption);
 
             ApiService apiService = ApiClient.getClient().create(ApiService.class);
-            Call<ApiResponse> call = apiService.createPost(contentBody, imagePart);
+            Call<PostDetailResponse> call = apiService.createPost(captionBody, imagePart);
 
-            call.enqueue(new Callback<ApiResponse>() {
+            call.enqueue(new Callback<PostDetailResponse>() {
                 @Override
-                public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                public void onResponse(Call<PostDetailResponse> call, Response<PostDetailResponse> response) {
                     progressBar.setVisibility(View.GONE);
                     submitPostButton.setEnabled(true);
-                    if (response.isSuccessful() && response.body() != null && response.body().isStatus()) {
+                    if (response.isSuccessful() && response.body() != null) {
                         Toast.makeText(CreatePostActivity.this, "Đăng bài thành công!", Toast.LENGTH_SHORT).show();
+                        setResult(RESULT_OK);
                         finish();
                     } else {
                         Toast.makeText(CreatePostActivity.this, "Đăng bài thất bại", Toast.LENGTH_SHORT).show();
@@ -107,7 +109,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<ApiResponse> call, Throwable t) {
+                public void onFailure(Call<PostDetailResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
                     submitPostButton.setEnabled(true);
                     Toast.makeText(CreatePostActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
