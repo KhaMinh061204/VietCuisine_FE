@@ -1,11 +1,16 @@
 package com.example.vietcuisine.data.model;
 
-public class RecipeIngredient {
+import java.io.Serializable;
+
+public class RecipeIngredient implements Serializable {
     private String _id;
     private String ingredientId;
     private String name;
     private String quantity;
     private String recipeId;
+
+    // Add this field
+    private boolean selected = false;
 
     // Constructors
     public RecipeIngredient() {}
@@ -31,7 +36,10 @@ public class RecipeIngredient {
     public String getRecipeId() { return recipeId; }
     public void setRecipeId(String recipeId) { this.recipeId = recipeId; }
 
-    // Backward compatibility for old getName() method
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    // Selection
+    public boolean isSelected() { return selected; }
+    public void setSelected(boolean selected) { this.selected = selected; }
 }

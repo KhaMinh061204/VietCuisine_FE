@@ -3,18 +3,36 @@ package com.example.vietcuisine.ui.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.vietcuisine.R;
 import com.example.vietcuisine.data.model.RecipeIngredient;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredientAdapter.ViewHolder> {
-    private List<RecipeIngredient> ingredients;
 
-    public RecipeIngredientAdapter(List<RecipeIngredient> ingredients) {
-        this.ingredients = ingredients;
+    private List<RecipeIngredient> ingredientList;
+
+    public RecipeIngredientAdapter(List<RecipeIngredient> ingredientList) {
+        this.ingredientList = ingredientList;
+    }
+
+    public void updateIngredients(List<RecipeIngredient> newList) {
+        this.ingredientList = newList;
+        notifyDataSetChanged();
+    }
+
+    public List<RecipeIngredient> getSelectedIngredients() {
+        List<RecipeIngredient> selectedList = new ArrayList<>();
+        for (RecipeIngredient ingredient : ingredientList) {
+            if (ingredient.isSelected()) {
+                selectedList.add(ingredient);
+            }
+        }
+        return selectedList;
     }
 
     @NonNull
@@ -27,40 +45,30 @@ public class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredie
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        RecipeIngredient ingredient = ingredients.get(position);
+        RecipeIngredient ingredient = ingredientList.get(position);
+        holder.nameTextView.setText(ingredient.getName());
+        holder.quantityTextView.setText(ingredient.getQuantity());
+        holder.checkBox.setChecked(ingredient.isSelected());
 
-        // Hiển thị tên nguyên liệu
-        holder.ingredientName.setText(
-                ingredient.getName() != null && !ingredient.getName().isEmpty()
-                        ? ingredient.getName()
-                        : "Nguyên liệu"
-        );
-
-        // Hiển thị số lượng (đã bao gồm đơn vị)
-        String quantity = ingredient.getQuantity();
-        holder.ingredientQuantity.setText(
-                quantity != null && !quantity.isEmpty() ? quantity : "Không xác định"
-        );
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            ingredient.setSelected(isChecked);
+        });
     }
-
 
     @Override
     public int getItemCount() {
-        return ingredients != null ? ingredients.size() : 0;
+        return ingredientList != null ? ingredientList.size() : 0;
     }
 
-    public void updateIngredients(List<RecipeIngredient> newIngredients) {
-        this.ingredients = newIngredients;
-        notifyDataSetChanged();
-    }
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        CheckBox checkBox;
+        TextView nameTextView, quantityTextView;
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView ingredientName, ingredientQuantity;
-
-        ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ingredientName = itemView.findViewById(R.id.ingredientName);
-            ingredientQuantity = itemView.findViewById(R.id.ingredientQuantity);
+            checkBox = itemView.findViewById(R.id.checkBox3);
+            nameTextView = itemView.findViewById(R.id.ingredientName);
+            quantityTextView = itemView.findViewById(R.id.ingredientQuantity);
         }
     }
 }
