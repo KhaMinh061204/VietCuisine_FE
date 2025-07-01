@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.example.vietcuisine.R;
 import com.example.vietcuisine.data.model.Recipe;
 import java.util.List;
@@ -30,22 +32,32 @@ public class ProfileRecipeAdapter extends RecyclerView.Adapter<ProfileRecipeAdap
     @NonNull
     @Override
     public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_profile_recipe, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_recipe_grid, parent, false);
         return new RecipeViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         Recipe recipe = recipes.get(position);
-        
+
         holder.recipeTitle.setText(recipe.getTitle());
-        if (recipe.getDescription() != null && !recipe.getDescription().isEmpty()) {
-            holder.recipeDescription.setText(recipe.getDescription());
+
+        if (recipe.getImage() != null && !recipe.getImage().isEmpty()) {
+            Glide.with(context)
+                    .load(recipe.getImage())
+                    .placeholder(R.drawable.placeholder_post)
+                    .into(holder.recipeImage);
+            holder.recipeImage.setVisibility(View.VISIBLE);
+        } else {
+            holder.recipeImage.setVisibility(View.GONE);
         }
 
-        // TODO: Load image with Glide
-        // Glide.with(context).load(recipe.getImage()).into(holder.recipeImage);
 
+        holder.cookingTime.setText(recipe.getTime() + " phút");
+
+
+
+        holder.likesCount.setText(String.valueOf(recipe.getLikesCount()));
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onRecipeClick(recipe);
@@ -65,13 +77,15 @@ public class ProfileRecipeAdapter extends RecyclerView.Adapter<ProfileRecipeAdap
 
     static class RecipeViewHolder extends RecyclerView.ViewHolder {
         ImageView recipeImage;
-        TextView recipeTitle, recipeDescription;
+        TextView recipeTitle;
+        TextView cookingTime, likesCount;
 
         public RecipeViewHolder(@NonNull View itemView) {
             super(itemView);
             recipeImage = itemView.findViewById(R.id.recipeImage);
             recipeTitle = itemView.findViewById(R.id.recipeTitle);
-            recipeDescription = itemView.findViewById(R.id.recipeDescription);
+            cookingTime = itemView.findViewById(R.id.cookingTime);
+            likesCount = itemView.findViewById(R.id.likesCount);
         }
     }
 }

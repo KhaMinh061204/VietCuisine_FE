@@ -99,10 +99,10 @@ public interface ApiService {
     // Post endpoints
     @GET("posts")
     Call<List<Post>> getAllPosts();
-    
+
     @GET("posts/my")
-    Call<PostResponse> getMyPosts();
-    
+    Call<List<Post>> getMyPosts();
+
     @GET("posts/{id}")
     Call<PostDetailResponse> getPostById(@Path("id") String id);
     
