@@ -31,7 +31,7 @@ public class OrderActivity extends AppCompatActivity {
         ArrayList<RecipeIngredient> selectedIngredients =
                 (ArrayList<RecipeIngredient>) getIntent().getSerializableExtra("selected_ingredients");
 
-        ingredientAdapter = new RecipeIngredientAdapter(selectedIngredients != null ? selectedIngredients : new ArrayList<>());
+        ingredientAdapter = new RecipeIngredientAdapter(selectedIngredients != null ? selectedIngredients : new ArrayList<>(), true);
         ingredientsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         ingredientsRecyclerView.setAdapter(ingredientAdapter);
 
