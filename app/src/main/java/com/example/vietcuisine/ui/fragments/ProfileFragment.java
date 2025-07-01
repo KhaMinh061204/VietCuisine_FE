@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.example.vietcuisine.R;
@@ -27,12 +28,16 @@ import com.example.vietcuisine.data.model.UserResponse;
 import com.example.vietcuisine.data.model.Recipe;
 import com.example.vietcuisine.data.model.RecipeResponse;
 import com.example.vietcuisine.data.model.ApiResponse;
+import com.example.vietcuisine.ui.adapters.ProfilePagerAdapter;
 import com.example.vietcuisine.ui.adapters.ProfileRecipeAdapter;
 import com.example.vietcuisine.ui.auth.LoginActivity;
 import com.example.vietcuisine.ui.profile.EditProfileActivity;
 import com.example.vietcuisine.ui.recipe.RecipeDetailActivity;
 import com.google.android.material.tabs.TabLayout;
-
+import com.example.vietcuisine.ui.profile.MyPosts;
+import com.example.vietcuisine.ui.profile.MyRecipes;
+import com.example.vietcuisine.ui.profile.MySavedRecipes;
+import com.google.android.material.tabs.TabLayoutMediator;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -47,8 +52,9 @@ public class ProfileFragment extends Fragment {
     private ImageView profileImageView, menuButton;
     private TextView nameTextView, emailTextView, recipesCountTextView, followersCountTextView, followingCountTextView;
     private TabLayout tabLayout;
-    private RecyclerView recipesRecyclerView;
-    
+    private ViewPager2 viewPager;
+
+    private ProfilePagerAdapter pagerAdapter;
     private ProfileRecipeAdapter recipeAdapter;
     private ApiService apiService;
     private List<Recipe> recipes = new ArrayList<>();
@@ -62,14 +68,12 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         
         initViews(view);
-        setupRecyclerView();
-        setupTabs();
+        setupViewPager();
         setupClickListeners();
         
         apiService = ApiClient.getClient().create(ApiService.class);
         
         loadUserProfile();
-        loadUserRecipes();
         
         return view;
     }
@@ -83,33 +87,26 @@ public class ProfileFragment extends Fragment {
         followersCountTextView = view.findViewById(R.id.followersCountTextView);
 //        followingCountTextView = view.findViewById(R.id.followingCountTextView);
         tabLayout = view.findViewById(R.id.profileTabLayout);
-        recipesRecyclerView = view.findViewById(R.id.recipesRecyclerView);
+        viewPager = view.findViewById(R.id.profileViewPager);
     }
 
-    private void setupRecyclerView() {
-        recipesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recipeAdapter = new ProfileRecipeAdapter(getContext(), recipes, this::onRecipeClick);
-        recipesRecyclerView.setAdapter(recipeAdapter);
-    }
+    private void setupViewPager() {
+        pagerAdapter = new ProfilePagerAdapter(this);
+        viewPager.setAdapter(pagerAdapter);
 
-    private void setupTabs() {
-        tabLayout.addTab(tabLayout.newTab().setText("Công thức của tôi"));
-        tabLayout.addTab(tabLayout.newTab().setText("Bài viết"));
-        tabLayout.addTab(tabLayout.newTab().setText("Đã lưu"));
-        
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                currentTab = tab.getPosition();
-                loadUserRecipes();
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText("Công thức của tôi");
+                    break;
+                case 1:
+                    tab.setText("Bài viết");
+                    break;
+                case 2:
+                    tab.setText("Đã lưu");
+                    break;
             }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
-        });
+        }).attach();
     }
 
     private void setupClickListeners() {
@@ -181,31 +178,31 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private void loadUserRecipes() {
-        Call<RecipeResponse> call;
-        if (currentTab == 0) {
-            call = apiService.getMyRecipes();
-        } else {
-            call = apiService.getSavedRecipes();
-        }
-        
-        call.enqueue(new Callback<RecipeResponse>() {
-            @Override
-            public void onResponse(Call<RecipeResponse> call, Response<RecipeResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    recipes.clear();
-                    recipes.addAll(response.body().getRecipes());
-                    recipeAdapter.notifyDataSetChanged();
-                    updateRecipesCount();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RecipeResponse> call, Throwable t) {
-                showError("Lỗi tải công thức: " + t.getMessage());
-            }
-        });
-    }
+//    private void loadUserRecipes() {
+//        Call<RecipeResponse> call;
+//        if (currentTab == 0) {
+//            call = apiService.getMyRecipes();
+//        } else {
+//            call = apiService.getSavedRecipes();
+//        }
+//
+//        call.enqueue(new Callback<RecipeResponse>() {
+//            @Override
+//            public void onResponse(Call<RecipeResponse> call, Response<RecipeResponse> response) {
+//                if (response.isSuccessful() && response.body() != null) {
+//                    recipes.clear();
+//                    recipes.addAll(response.body().getRecipes());
+//                    recipeAdapter.notifyDataSetChanged();
+//                    updateRecipesCount();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<RecipeResponse> call, Throwable t) {
+//                showError("Lỗi tải công thức: " + t.getMessage());
+//            }
+//        });
+//    }
 
     private void updateUI() {
         if (currentUser != null) {
@@ -277,6 +274,5 @@ public class ProfileFragment extends Fragment {
     public void onResume() {
         super.onResume();
         loadUserProfile();
-        loadUserRecipes();
     }
 }

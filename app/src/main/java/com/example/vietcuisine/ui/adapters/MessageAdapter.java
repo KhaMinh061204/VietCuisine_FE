@@ -3,11 +3,13 @@ package com.example.vietcuisine.ui.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.vietcuisine.R;
 import com.example.vietcuisine.data.model.Message;
 
@@ -24,10 +26,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private List<Message> messageList;
     private String currentUserId;
+    private String receiverAvatarUrl;
 
-    public MessageAdapter(List<Message> messageList, String currentUserId) {
+    public MessageAdapter(List<Message> messageList, String currentUserId, String receiverAvatarUrl) {
         this.messageList = messageList;
         this.currentUserId = currentUserId;
+        this.receiverAvatarUrl = receiverAvatarUrl;
     }
 
     @Override
@@ -54,12 +58,32 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Message message = messageList.get(position);
+
         if (holder instanceof SentViewHolder) {
             ((SentViewHolder) holder).messageText.setText(message.getText());
             ((SentViewHolder) holder).timeText.setText(formatTime(message.getCreatedAt()));
-        } else {
-            ((ReceivedViewHolder) holder).messageText.setText(message.getText());
-            ((ReceivedViewHolder) holder).timeText.setText(formatTime(message.getCreatedAt()));
+        } else if (holder instanceof ReceivedViewHolder) {
+            ReceivedViewHolder receivedHolder = (ReceivedViewHolder) holder;
+            receivedHolder.messageText.setText(message.getText());
+            receivedHolder.timeText.setText(formatTime(message.getCreatedAt()));
+            Glide.with(holder.itemView.getContext())
+                    .load(receiverAvatarUrl)
+                    .into(receivedHolder.avatar);
+
+            // Nếu đây là tin nhắn cuối cùng của chuỗi cùng người gửi, mới hiển thị avatar
+            boolean isLastInGroup = true;
+            if (position < messageList.size() - 1) {
+                Message nextMessage = messageList.get(position + 1);
+                if (nextMessage.getSenderId().equals(message.getSenderId())) {
+                    isLastInGroup = false;
+                }
+            }
+
+            if (isLastInGroup) {
+                receivedHolder.avatarContainer.setVisibility(View.VISIBLE);
+            } else {
+                receivedHolder.avatarContainer.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -82,11 +106,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     static class ReceivedViewHolder extends RecyclerView.ViewHolder {
         TextView messageText;
         TextView timeText;
-
+        ImageView avatar;
+        View avatarContainer;
         ReceivedViewHolder(View view) {
             super(view);
             messageText = view.findViewById(R.id.sendermessage);
             timeText = view.findViewById(R.id.timeofmessage);
+            avatar = view.findViewById(R.id.receiver_profile_image);
+            avatarContainer = view.findViewById(R.id.avatar_card_container);
         }
     }
     private String formatTime(String isoDateTime) {

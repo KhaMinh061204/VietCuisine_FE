@@ -47,6 +47,19 @@
         android:layout_weight="1"
         android:padding="16dp" />
 
+    <!-- Total Price -->
+    <TextView
+        android:id="@+id/tvTotal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="end"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Tổng: 0 VND"
+        android:textColor="@color/primary_color"
+        android:textSize="18sp" />
+
     <!-- Checkout Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/checkoutButton"

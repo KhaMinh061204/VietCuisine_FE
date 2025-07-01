@@ -2,6 +2,7 @@ package com.example.vietcuisine.ui.recipe;
 import com.google.gson.Gson;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -21,6 +22,7 @@ import com.example.vietcuisine.data.network.ApiClient;
 import com.example.vietcuisine.data.network.ApiService;
 import com.example.vietcuisine.ui.adapters.RecipeIngredientAdapter;
 import com.example.vietcuisine.ui.adapters.RecipeStepAdapter;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +60,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         setupRecyclerViews();
         loadRecipeData();
         setupBuyNowButton();
+        setupAddToCartButton();
     }
 
     private void initViews() {
@@ -224,6 +227,38 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 Intent intent = new Intent(RecipeDetailActivity.this, com.example.vietcuisine.ui.order.OrderActivity.class);
                 intent.putExtra("selected_ingredients", new ArrayList<>(selectedIngredients));
                 startActivity(intent);
+            });
+        }
+    }
+
+    // --- Add this method to handle "Add to Cart" button ---
+    private void setupAddToCartButton() {
+        Button addToCartButton = findViewById(R.id.button2); // "Thêm vào giỏ hàng" button
+        if (addToCartButton != null) {
+            addToCartButton.setOnClickListener(v -> {
+                List<RecipeIngredient> selectedIngredients = ingredientAdapter.getSelectedIngredients();
+                if (selectedIngredients == null || selectedIngredients.isEmpty()) {
+                    showError("Vui lòng chọn ít nhất một nguyên liệu để thêm vào giỏ hàng");
+                    return;
+                }
+                // Lưu vào SharedPreferences
+                SharedPreferences prefs = getSharedPreferences("cart_prefs", MODE_PRIVATE);
+                Gson gson = new Gson();
+                // Lấy cart hiện tại
+                String cartJson = prefs.getString("cart_items", null);
+                java.lang.reflect.Type type = new TypeToken<List<RecipeIngredient>>(){}.getType();
+                List<RecipeIngredient> cartList = cartJson != null ? gson.fromJson(cartJson, type) : new ArrayList<>();
+                // Thêm các nguyên liệu mới (nếu chưa có)
+                for (RecipeIngredient ing : selectedIngredients) {
+                    boolean exists = false;
+                    for (RecipeIngredient c : cartList) {
+                        if (c.getName().equals(ing.getName())) { exists = true; break; }
+                    }
+                    if (!exists) cartList.add(ing);
+                }
+                // Lưu lại
+                prefs.edit().putString("cart_items", gson.toJson(cartList)).apply();
+                showError("Đã thêm vào giỏ hàng");
             });
         }
     }

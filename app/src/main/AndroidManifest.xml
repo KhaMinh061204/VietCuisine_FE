@@ -137,6 +137,12 @@
             android:exported="false"
             android:theme="@style/Theme.VietCuisine.NoActionBar" />
 
+        <!-- Cart Activity -->
+        <activity
+            android:name=".ui.shop.CartActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VietCuisine.NoActionBar" />
+
     </application>
 
 </manifest>

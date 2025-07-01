@@ -129,6 +129,49 @@ public class ShopFragment extends Fragment {
         });
     }
 
+//    private void onAddToCartClick(Ingredient ingredient) {
+//        // Add to local cart
+//        boolean found = false;
+//        for (Ingredient item : cartItems) {
+//            if (item.getId().equals(ingredient.getId())) {
+//                item.setQuantity(item.getQuantity() + 1);
+//                found = true;
+//                break;
+//            }
+//        }
+//
+//        if (!found) {
+//            Ingredient cartItem = new Ingredient(ingredient);
+//            cartItem.setQuantity(1);
+//            cartItems.add(cartItem);
+//        }
+//
+//        // Save to SharedPreferences or local database
+//        saveCartToLocal();
+//        updateCartBadge();
+//
+//        Toast.makeText(getContext(), "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+//    }
+
+//    private void saveCartToLocal() {
+//        // Implementation to save cart items to SharedPreferences
+//        // This would typically use Gson to serialize the cart items
+//    }
+//
+//    private void updateCartBadge() {
+//        if (cartItems.size() > 0) {
+//            BadgeDrawable badge = BadgeDrawable.create(getContext());
+//            badge.setNumber(cartItems.size());
+//            badge.setVisible(true);
+//            // Apply badge to cart FAB
+//        }
+//    }
+//
+//    private void showError(String message) {
+//        if (getContext() != null) {
+//            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
     @Override
     public void onResume() {
