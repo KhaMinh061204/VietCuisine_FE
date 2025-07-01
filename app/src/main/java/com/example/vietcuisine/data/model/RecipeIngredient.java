@@ -8,10 +8,12 @@ public class RecipeIngredient implements Serializable {
     private String name;
     private String quantity;
     private String recipeId;
+    private String imageUrl;
 
     // Add this field
     private boolean selected = false;
     private double unitPrice = 0;
+    private String unit;
 
     // Constructors
     public RecipeIngredient() {}
@@ -26,13 +28,20 @@ public class RecipeIngredient implements Serializable {
     public void setId(String id) { this._id = id; }
 
     public String getIngredientId() { return ingredientId; }
+
+    public String getUnit() {
+        return unit;
+    }
+
     public void setIngredientId(String ingredientId) { this.ingredientId = ingredientId; }
 
     public String getIngredientName() { return name; }
     public void setIngredientName(String ingredientName) { this.name = ingredientName; }
 
     public String getQuantity() { return quantity; }
-    public void setQuantity(String quantity) { this.quantity = quantity; }
+    public String setQuantity(String quantity) { this.quantity = quantity;
+        return quantity;
+    }
 
     public String getRecipeId() { return recipeId; }
     public void setRecipeId(String recipeId) { this.recipeId = recipeId; }
@@ -41,7 +50,10 @@ public class RecipeIngredient implements Serializable {
     public void setName(String name) { this.name = name; }
 
     public double getUnitPrice() { return unitPrice; }
-    public void setUnitPrice(double unitPrice) { this.unitPrice = unitPrice; }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
     // Selection
     public boolean isSelected() { return selected; }

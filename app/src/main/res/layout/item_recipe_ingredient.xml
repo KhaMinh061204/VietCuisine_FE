@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/ingredientImage"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="center_vertical"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_avatar_placeholder"
@@ -42,7 +42,7 @@
         android:text="1"
         android:textSize="16sp"
         android:fontFamily="@font/poppins_medium"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:visibility="gone"
         android:layout_marginHorizontal="8dp"
         android:background="@android:color/white"

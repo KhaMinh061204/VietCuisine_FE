@@ -77,10 +77,11 @@ public class OrderActivity extends AppCompatActivity {
             payment();
         });
 
-        ArrayList<RecipeIngredient> selectedIngredients =
-                (ArrayList<RecipeIngredient>) getIntent().getSerializableExtra("selected_ingredients");
+        ArrayList<RecipeIngredient> selectedIngredients = (ArrayList<RecipeIngredient>) getIntent().getSerializableExtra("selected_ingredients");
         Log.d("selet","ingredient selet"+selectedIngredients);
-        ingredientAdapter = new RecipeIngredientAdapter(selectedIngredients != null ? selectedIngredients : new ArrayList<>(), true, this::updateTotalPrice);
+        ingredientAdapter = new RecipeIngredientAdapter(selectedIngredients, true, total -> {
+            tvTotal.setText(String.format("Tổng: %.0f VND", total));
+        });
         ingredientsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         ingredientsRecyclerView.setAdapter(ingredientAdapter);
 
@@ -91,22 +92,22 @@ public class OrderActivity extends AppCompatActivity {
     private void updateTotalPrice() {
         double total = 0;
         if (ingredientAdapter != null) {
-            Log.d("selected","ingredient"+ingredientAdapter.getSelectedIngredients());
             for (RecipeIngredient ingredient : ingredientAdapter.getSelectedIngredients()) {
-                // Parse quantity and unit
                 String quantityStr = ingredient.getQuantity();
-                int quantity = 1;
-                java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("(\\d+)").matcher(quantityStr.trim());
+                float quantity = 1f;
+                Matcher matcher = Pattern.compile("(\\d+(?:\\.\\d+)?)").matcher(quantityStr.trim());
                 if (matcher.find()) {
-                    try { quantity = Integer.parseInt(matcher.group(1)); } catch (Exception ignored) {}
+                    try {
+                        quantity = Float.parseFloat(matcher.group(1));
+                    } catch (Exception ignored) {}
                 }
-                // Use unitPrice from RecipeIngredient directly
                 double unitPrice = ingredient.getUnitPrice();
                 total += unitPrice * quantity;
             }
         }
-        if (tvTotal != null) tvTotal.setText(String.format("Tổng: %.0f VND", total));
+        tvTotal.setText(String.format("Tổng: %.0f VND", total));
     }
+
 
     private void payment() {
         List<RecipeIngredient> selectedIngredients = ingredientAdapter.getSelectedIngredients();
