@@ -11,6 +11,7 @@ public class RecipeIngredient implements Serializable {
 
     // Add this field
     private boolean selected = false;
+    private double unitPrice = 0;
 
     // Constructors
     public RecipeIngredient() {}
@@ -38,6 +39,9 @@ public class RecipeIngredient implements Serializable {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    public double getUnitPrice() { return unitPrice; }
+    public void setUnitPrice(double unitPrice) { this.unitPrice = unitPrice; }
 
     // Selection
     public boolean isSelected() { return selected; }
