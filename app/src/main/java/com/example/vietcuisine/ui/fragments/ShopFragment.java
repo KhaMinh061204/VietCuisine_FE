@@ -52,6 +52,7 @@ public class ShopFragment extends Fragment {
 //    private List<Ingredient> ingredients = new ArrayList<>();
 //    private List<Ingredient> cartItems = new ArrayList<>();
     private TabLayout tabLayout;
+    private View cartIcon;
 
     private int currentTab = 0;
 
@@ -59,8 +60,8 @@ public class ShopFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop, container, false);
-        
         initViews(view);
+        setupCartIconClick(view);
 //        setupRecyclerView();
 //        setupSearchView();
 //        setupClickListeners();
@@ -80,22 +81,16 @@ public class ShopFragment extends Fragment {
 //        fabCart = view.findViewById(R.id.fabCart);
 //        fabOrders = view.findViewById(R.id.fabOrders);
         tabLayout = view.findViewById(R.id.StatusTabsLayout);
+        cartIcon = view.findViewById(R.id.cartIcon);
     }
-//    private void setupRecyclerView() {
-//        ingredientsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-//        ingredientAdapter = new IngredientAdapter(getContext(), ingredients, new IngredientAdapter.OnIngredientClickListener() {
-//            @Override
-//            public void onIngredientClick(Ingredient ingredient) {
-//                ShopFragment.this.onIngredientClick(ingredient);
-//            }
-//
-//            @Override
-//            public void onAddToCartClick(Ingredient ingredient) {
-//                ShopFragment.this.onAddToCartClick(ingredient);
-//            }
-//        });
-//        ingredientsRecyclerView.setAdapter(ingredientAdapter);
-//    }
+
+    private void setupCartIconClick(View view) {
+        View cartIcon = view.findViewById(R.id.cartIcon);
+        cartIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), CartActivity.class);
+            startActivity(intent);
+        });
+    }
 
     private void setupTabs() {
         tabLayout.addTab(tabLayout.newTab().setText("Đang giao"));
