@@ -38,22 +38,36 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        // Check if user is logged in
+
         if (!isUserLoggedIn()) {
             redirectToLogin();
             return;
         }
-        
-        setContentView(R.layout.activity_main);        
+
+        setContentView(R.layout.activity_main);
         initViews();
         setupBottomNavigation();
         setupFabClick();
-          // Load default fragment
-        if (savedInstanceState == null) {
+
+        String navTarget = getIntent().getStringExtra("navigate_to");
+
+        if ("shop".equals(navTarget)) {
+            // 👇 Gọi fragment thủ công trước khi set selected tab
+            loadFragment(new ShopFragment());
+            showFab(false); // Ẩn nút FAB trên shop
+            bottomNavigation.setSelectedItemId(R.id.nav_shop); // Highlight đúng tab
+        } else {
+            // Mặc định Home
             loadFragment(new HomeFragment());
-            showFab(true); // Show FAB for home fragment
+            showFab(true);
+            bottomNavigation.setSelectedItemId(R.id.nav_home);
         }
+
+    // Load default fragment
+//        if (savedInstanceState == null) {
+//            loadFragment(new HomeFragment());
+//            showFab(true); // Show FAB for home fragment
+//        }
     }    private void initViews() {
         bottomNavigation = findViewById(R.id.bottomNavigation);
         fabAdd = findViewById(R.id.fabAdd);
@@ -74,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 
 
     private void setupBottomNavigation() {

@@ -3,6 +3,7 @@ package com.example.vietcuisine.ui.splash;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +25,7 @@ public class SplashActivity extends AppCompatActivity {
     
     private void checkLoginStatus() {
         boolean isLoggedIn = SharedPrefsManager.getInstance().isLoggedIn();
+        Log.d("isslogin","login"+isLoggedIn);
         Intent intent;
         if (isLoggedIn) {
             intent = new Intent(this, MainActivity.class);

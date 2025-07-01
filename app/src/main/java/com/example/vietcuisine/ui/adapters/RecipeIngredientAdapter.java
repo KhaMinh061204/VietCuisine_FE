@@ -1,5 +1,6 @@
 package com.example.vietcuisine.ui.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,11 @@ public class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredie
                 selectedList.add(ingredient);
             }
         }
+        Log.d("selected list name","list name"+selectedList.get(0));
+
+        Log.d("selected list name","list name"+selectedList.get(0).getName());
+        Log.d("selected list id","list id"+selectedList.get(0).getIngredientId());
+
         return selectedList;
     }
 
@@ -127,19 +133,32 @@ public class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredie
             } catch (Exception e) {
                 tvPrice.setText("0 VND");
             }
-            etQuantity.setOnFocusChangeListener((v, hasFocus) -> {
-                if (!hasFocus) {
-                    String input = etQuantity.getText().toString();
+            etQuantity.addTextChangedListener(new android.text.TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
                     int newQuantity = 1;
-                    try { newQuantity = Integer.parseInt(input); } catch (Exception ignored) {}
+                    try {
+                        newQuantity = Integer.parseInt(s.toString());
+                    } catch (Exception ignored) {}
+
                     if (newQuantity < 1) newQuantity = 1;
-                    etQuantity.setText(String.valueOf(newQuantity));
+
+                    // Cập nhật model
                     ingredient.setQuantity(newQuantity + (finalUnit.isEmpty() ? "" : finalUnit));
-                    // Cập nhật lại giá tiền
+
+                    // Cập nhật UI
                     double price = unitPrice * newQuantity;
                     tvPrice.setText(String.format("%.0f VND", price));
+
+                    // Cập nhật tổng tiền
                     if (onUpdateTotalPrice != null) onUpdateTotalPrice.run();
                 }
+
+                @Override
+                public void afterTextChanged(android.text.Editable s) {}
             });
         } else {
             holder.checkBox.setVisibility(View.VISIBLE);

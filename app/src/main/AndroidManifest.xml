@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
         android:name=".VietCuisineApplication"
@@ -20,7 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VietCuisine"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        >
         
         <!-- Splash Activity -->
         <activity
@@ -98,7 +100,23 @@
             android:name=".ui.post.CreatePostActivity"
             android:exported="false"
             android:theme="@style/Theme.VietCuisine.NoActionBar" />
-            
+
+        <activity
+            android:name=".ui.order.OrderResultActivity"
+            android:exported="true"
+            android:theme="@style/Theme.VietCuisine.NoActionBar">
+            <intent-filter android:label="DeepLink">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="vietcuisine"
+                    android:host="payment-success" />
+            </intent-filter>
+        </activity>
+
+
+
         <!-- Create Reel Activity -->
         <activity
             android:name=".ui.reel.CreateReelActivity"

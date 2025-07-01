@@ -9,6 +9,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.*;
+import java.util.Map;
 
 public interface ApiService {
     
@@ -187,17 +188,19 @@ public interface ApiService {
     Call<IngredientDetailResponse> getIngredientById(@Path("id") String id);
       // Ingredient Order endpoints
     @POST("order")
-    Call<ApiResponse> createOrder(@Body OrderRequest request);
+    Call<OrderListResponse> createOrder(@Body OrderRequest orderRequest);
     
     @GET("order/my")
-    Call<OrderResponse> getMyOrders();
+    Call<OrderListResponse> getMyOrders();
     
     @GET("order/{id}")
     Call<OrderDetailResponse> getOrderById(@Path("id") String id);
-    
+
     @POST("order/payment")
-    Call<PaymentResponse> processPayment(@Body PaymentRequest request);
-    
+    Call<PaymentResponse> processPayment(@Body Map<String, String> body);
+    @GET("order/status/{status}")
+    Call<OrderListResponse> getOrdersByStatus(@Path("status") String status);
+
     // Message endpoints
     @GET("messages/conversations/{userId}")
     Call<List<MessageUser>> getConversations(@Path("userId") String userId);
@@ -213,5 +216,5 @@ public interface ApiService {
     Call<ApiResponse> updateAccountStatus(@Path("id") String id, @Body UpdateStatusRequest request);
     
     @GET("admin/order/all")
-    Call<OrderResponse> getAllOrders();
+    Call<OrderListResponse> getAllOrders();
 }

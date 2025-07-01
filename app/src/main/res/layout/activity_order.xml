@@ -49,6 +49,12 @@
 
         <!-- 1. User Info -->
         <EditText
+            android:id="@+id/etCustomer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tên khách hàng"
+            android:layout_marginBottom="8dp"/>
+        <EditText
             android:id="@+id/etPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

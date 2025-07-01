@@ -1,29 +1,34 @@
 package com.example.vietcuisine.data.model;
-
+import com.example.vietcuisine.data.model.IngredientOrder.ShippingAddress;
 import java.util.List;
 
 public class OrderRequest {
-    private List<OrderItem> items;
-    private String deliveryAddress;
+    private List<OrderItem> orders;
+    private ShippingAddress shippingAddress;
     private String paymentMethod;
-    private String notes;
 
     public OrderRequest() {}
 
-    public List<OrderItem> getItems() {
-        return items;
+    public OrderRequest(List<OrderItem> orders, ShippingAddress shippingAddress, String paymentMethod) {
+        this.orders = orders;
+        this.shippingAddress = shippingAddress;
+        this.paymentMethod = paymentMethod;
     }
 
-    public void setItems(List<OrderItem> items) {
-        this.items = items;
+    public List<OrderItem> getOrders() {
+        return orders;
     }
 
-    public String getDeliveryAddress() {
-        return deliveryAddress;
+    public void setOrders(List<OrderItem> orders) {
+        this.orders = orders;
     }
 
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
+    public ShippingAddress getShippingAddress() {
+        return shippingAddress;
+    }
+
+    public void setShippingAddress(ShippingAddress shippingAddress) {
+        this.shippingAddress = shippingAddress;
     }
 
     public String getPaymentMethod() {
@@ -34,25 +39,15 @@ public class OrderRequest {
         this.paymentMethod = paymentMethod;
     }
 
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
     public static class OrderItem {
         private String ingredientId;
         private int quantity;
-        private double unitPrice;
 
         public OrderItem() {}
 
-        public OrderItem(String ingredientId, int quantity, double unitPrice) {
+        public OrderItem(String ingredientId, int quantity) {
             this.ingredientId = ingredientId;
             this.quantity = quantity;
-            this.unitPrice = unitPrice;
         }
 
         public String getIngredientId() {
@@ -71,12 +66,5 @@ public class OrderRequest {
             this.quantity = quantity;
         }
 
-        public double getUnitPrice() {
-            return unitPrice;
-        }
-
-        public void setUnitPrice(double unitPrice) {
-            this.unitPrice = unitPrice;
-        }
     }
 }

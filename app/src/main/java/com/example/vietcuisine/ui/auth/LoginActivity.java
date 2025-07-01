@@ -182,7 +182,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
-        editor.putBoolean("is_logged_in", true);
+        SharedPrefsManager.getInstance().setLoggedIn(true);
         editor.apply();
 
         Log.d("LoginActivity", "User session saved successfully");
