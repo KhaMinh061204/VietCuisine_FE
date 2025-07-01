@@ -69,8 +69,8 @@ public class ChatDetailActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerviewofspecific);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        messageAdapter = new MessageAdapter(messageList, currentUserId);
+        String receiverAvatar = getIntent().getStringExtra("user_avatar");
+        messageAdapter = new MessageAdapter(messageList, currentUserId, receiverAvatar);
         recyclerView.setAdapter(messageAdapter);
 
         receiverId = getIntent().getStringExtra("user_id");

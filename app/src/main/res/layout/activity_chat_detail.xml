@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ECE5DD"
+    android:background="@color/background_color"
     tools:context=".specificchat">
 
 
@@ -100,7 +100,7 @@
         android:paddingLeft="20dp"
         android:paddingEnd="10dp"
         android:textSize="18sp"
-        android:background="#FFFFFF"
+        android:background="@drawable/rounded_edittext"
         android:textAlignment="textStart"
         android:layout_alignParentBottom="true"
         android:layout_marginRight="55dp"

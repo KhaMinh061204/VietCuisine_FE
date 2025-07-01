@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ECE5DD">
+    android:background="@color/background_color">
 
     <!-- 🔙 Toolbar chứa nút back, avatar và tên người -->
     <androidx.appcompat.widget.Toolbar
