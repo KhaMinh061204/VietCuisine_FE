@@ -25,6 +25,7 @@ import com.example.vietcuisine.data.network.ApiClient;
 import com.example.vietcuisine.data.network.ApiService;
 import com.example.vietcuisine.ui.adapters.RecipeIngredientAdapter;
 import com.example.vietcuisine.data.model.IngredientOrder.ShippingAddress;
+import com.example.vietcuisine.ui.main.MainActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,12 +116,9 @@ public class OrderActivity extends AppCompatActivity {
         }
 
         List<OrderRequest.OrderItem> orderItems = new ArrayList<>();
-
         for (RecipeIngredient ingredient : selectedIngredients) {
-            String ingredientId = ingredient.getIngredientId(); // ⚠️ đảm bảo ID là string hợp lệ (MongoDB ObjectId)
+            String ingredientId = ingredient.getIngredientId();
             int quantity = extractQuantity(ingredient.getQuantity());
-
-            Log.d("OrderItem", "ingredientId: " + ingredientId + ", quantity: " + quantity);
             orderItems.add(new OrderRequest.OrderItem(ingredientId, quantity));
         }
 
@@ -133,7 +131,6 @@ public class OrderActivity extends AppCompatActivity {
             return;
         }
 
-        // Tạo shippingAddress
         IngredientOrder.ShippingAddress shippingAddress = new IngredientOrder.ShippingAddress(
                 nameStr,
                 phoneStr,
@@ -149,33 +146,39 @@ public class OrderActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     String orderId = response.body().getOrderId();
 
-                    Map<String, String> body = new HashMap<>();
-                    body.put("orderId", orderId);
+                    if (paymentMethod.equals("credit_card")) {
+                        Map<String, String> body = new HashMap<>();
+                        body.put("orderId", orderId);
 
-// Gọi API đúng format
-                    apiService.processPayment(body).enqueue(new Callback<PaymentResponse>() {
-                        @Override
-                        public void onResponse(Call<PaymentResponse> call, Response<PaymentResponse> paymentResponse) {
-                            Log.d("payment response", "payment: " + paymentResponse);
-
-                            if (paymentResponse.isSuccessful() && paymentResponse.body() != null) {
-                                String redirectUrl = paymentResponse.body().getUrl();
-
-                                // Mở trang thanh toán bằng trình duyệt
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(redirectUrl));
-                                startActivity(browserIntent);
-
-                                Toast.makeText(OrderActivity.this, "Đang chuyển đến trang thanh toán...", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(OrderActivity.this, "Thanh toán thất bại!", Toast.LENGTH_SHORT).show();
+                        apiService.processPayment(body).enqueue(new Callback<PaymentResponse>() {
+                            @Override
+                            public void onResponse(Call<PaymentResponse> call, Response<PaymentResponse> paymentResponse) {
+                                if (paymentResponse.isSuccessful() && paymentResponse.body() != null) {
+                                    String redirectUrl = paymentResponse.body().getUrl();
+                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(redirectUrl));
+                                    startActivity(browserIntent);
+                                    Toast.makeText(OrderActivity.this, "Đang chuyển đến trang thanh toán...", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(OrderActivity.this, "Thanh toán thất bại!", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                        @Override
-                        public void onFailure(Call<PaymentResponse> call, Throwable t) {
-                            Toast.makeText(OrderActivity.this, "Lỗi thanh toán: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
 
+                            @Override
+                            public void onFailure(Call<PaymentResponse> call, Throwable t) {
+                                Toast.makeText(OrderActivity.this, "Lỗi thanh toán: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    } else if (paymentMethod.equals("cash")) {
+                        Toast.makeText(OrderActivity.this, "Đặt hàng thành công bằng tiền mặt!", Toast.LENGTH_SHORT).show();
+
+                        // Trở về MainActivity và mở ShopFragment
+                        Intent intent = new Intent(OrderActivity.this, MainActivity.class);
+                        intent.putExtra("navigateTo", "shop");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        startActivity(intent);
+                        finish();
+                    }
 
                 } else {
                     Toast.makeText(OrderActivity.this, "Đặt hàng thất bại!", Toast.LENGTH_SHORT).show();

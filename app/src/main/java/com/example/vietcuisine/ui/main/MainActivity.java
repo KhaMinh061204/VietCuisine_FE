@@ -63,14 +63,30 @@ public class MainActivity extends AppCompatActivity {
             bottomNavigation.setSelectedItemId(R.id.nav_home);
         }
 
-    // Load default fragment
-//        if (savedInstanceState == null) {
-//            loadFragment(new HomeFragment());
-//            showFab(true); // Show FAB for home fragment
-//        }
     }    private void initViews() {
         bottomNavigation = findViewById(R.id.bottomNavigation);
         fabAdd = findViewById(R.id.fabAdd);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        handleIntent(getIntent());
+    }
+
+    private void handleIntent(Intent intent) {
+        if (intent != null && "shop".equals(intent.getStringExtra("navigateTo"))) {
+            bottomNavigation.setSelectedItemId(R.id.nav_shop);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainer, new ShopFragment()) // hoặc ID tương ứng
+                    .commit();
+        }
     }
 
     @Override
