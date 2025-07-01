@@ -1,5 +1,7 @@
 package com.example.vietcuisine.data.network;
 
+import androidx.annotation.Nullable;
+
 import com.example.vietcuisine.data.model.*;
 
 import java.util.List;
@@ -106,8 +108,9 @@ public interface ApiService {
     
     @Multipart
     @POST("posts")
-    Call<ApiResponse> createPost(
-        @Part("content") RequestBody content,
+    Call<PostDetailResponse> createPost(
+        @Part("caption") RequestBody caption,
+        @Part("recipeId") @Nullable RequestBody recipeId,
         @Part MultipartBody.Part image
     );
     

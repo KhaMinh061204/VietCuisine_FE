@@ -9,14 +9,24 @@ import android.view.View;
 import android.widget.*;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.vietcuisine.R;
 import com.example.vietcuisine.data.model.ApiResponse;
+import com.example.vietcuisine.data.model.PostDetailResponse;
+import com.example.vietcuisine.data.model.Recipe;
+import com.example.vietcuisine.data.model.RecipeResponse;
 import com.example.vietcuisine.data.network.ApiClient;
 import com.example.vietcuisine.data.network.ApiService;
+import com.example.vietcuisine.ui.adapters.RecipeGridAdapter;
 import com.example.vietcuisine.utils.FileUtils;
 import com.google.android.material.textfield.TextInputEditText;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -33,6 +43,10 @@ public class CreatePostActivity extends AppCompatActivity {
     private Button submitPostButton;
     private ProgressBar progressBar;
     private Uri imageUri = null;
+    private RecyclerView recipeSelectionRecyclerView;
+    private List<Recipe> recipeList = new ArrayList<>();
+    private RecipeGridAdapter recipeAdapter;
+    private String selectedRecipeId = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +64,42 @@ public class CreatePostActivity extends AppCompatActivity {
         View.OnClickListener pickImageListener = v -> openImagePicker();
         postImageView.setOnClickListener(pickImageListener);
         addPostImageContainer.setOnClickListener(pickImageListener);
+        recipeSelectionRecyclerView = findViewById(R.id.recipeSelectionRecyclerView);
+        recipeSelectionRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recipeAdapter = new RecipeGridAdapter(recipeList, recipe -> {
+            selectedRecipeId = recipe.getId();
+            Toast.makeText(this, "Đã chọn: " + recipe.getTitle(), Toast.LENGTH_SHORT).show();
+        });
+        recipeSelectionRecyclerView.setAdapter(recipeAdapter);
 
+        loadUserRecipes();
         submitPostButton.setOnClickListener(v -> submitPost());
     }
 
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    private void loadUserRecipes() {
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        apiService.getMyRecipes().enqueue(new Callback<RecipeResponse>() {
+            @Override
+            public void onResponse(Call<RecipeResponse> call, Response<RecipeResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getRecipes() != null) {
+                    recipeList.clear();
+                    recipeList.addAll(response.body().getRecipes());
+                    recipeAdapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(CreatePostActivity.this, "Không thể tải công thức", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RecipeResponse> call, Throwable t) {
+                Toast.makeText(CreatePostActivity.this, "Lỗi khi tải công thức", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -88,18 +131,23 @@ public class CreatePostActivity extends AppCompatActivity {
             RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
             MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", imageFile.getName(), reqFile);
 
-            RequestBody contentBody = RequestBody.create(MediaType.parse("text/plain"), caption);
+            RequestBody captionBody = RequestBody.create(MediaType.parse("text/plain"), caption);
+
+            RequestBody recipeIdBody = selectedRecipeId != null
+                    ? RequestBody.create(MediaType.parse("text/plain"), selectedRecipeId)
+                    : null;
 
             ApiService apiService = ApiClient.getClient().create(ApiService.class);
-            Call<ApiResponse> call = apiService.createPost(contentBody, imagePart);
+            Call<PostDetailResponse> call = apiService.createPost(captionBody, recipeIdBody, imagePart);
 
-            call.enqueue(new Callback<ApiResponse>() {
+            call.enqueue(new Callback<PostDetailResponse>() {
                 @Override
-                public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                public void onResponse(Call<PostDetailResponse> call, Response<PostDetailResponse> response) {
                     progressBar.setVisibility(View.GONE);
                     submitPostButton.setEnabled(true);
-                    if (response.isSuccessful() && response.body() != null && response.body().isStatus()) {
+                    if (response.isSuccessful() && response.body() != null) {
                         Toast.makeText(CreatePostActivity.this, "Đăng bài thành công!", Toast.LENGTH_SHORT).show();
+                        setResult(RESULT_OK);
                         finish();
                     } else {
                         Toast.makeText(CreatePostActivity.this, "Đăng bài thất bại", Toast.LENGTH_SHORT).show();
@@ -107,7 +155,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<ApiResponse> call, Throwable t) {
+                public void onFailure(Call<PostDetailResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
                     submitPostButton.setEnabled(true);
                     Toast.makeText(CreatePostActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();

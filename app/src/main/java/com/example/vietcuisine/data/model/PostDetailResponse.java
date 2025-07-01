@@ -3,19 +3,10 @@ package com.example.vietcuisine.data.model;
 import java.util.List;
 
 public class PostDetailResponse {
-    private boolean success;
     private String message;
     private Post data;
 
     public PostDetailResponse() {}
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
 
     public String getMessage() {
         return message;

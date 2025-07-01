@@ -1,8 +1,10 @@
 package com.example.vietcuisine.ui.recipe;
 import com.google.gson.Gson;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,18 +30,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RecipeDetailActivity extends AppCompatActivity {
-    
+
     private static final String TAG = "RecipeDetailActivity";
-    
+
     private ImageButton backButton;
     private ImageView recipeImage;
     private TextView recipeTitle, recipeDescription, cookingTime, servings;
     private TextView calories, protein, carbs, fat;
     private RecyclerView ingredientsRecyclerView, stepsRecyclerView;
-      private RecipeIngredientAdapter ingredientAdapter;
+    private RecipeIngredientAdapter ingredientAdapter;
     private RecipeStepAdapter stepAdapter;
     private ApiService apiService;
-    
+
     private Recipe recipe;
     private String recipeId;
 
@@ -47,7 +49,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
-        
+
         apiService = ApiClient.getClient().create(ApiService.class);
         recipeId = getIntent().getStringExtra("recipe_id");
         Log.d(TAG, "Loading image from URL11: " + recipeId);
@@ -55,6 +57,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         setupClickListeners();
         setupRecyclerViews();
         loadRecipeData();
+        setupBuyNowButton();
     }
 
     private void initViews() {
@@ -66,7 +69,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         servings = findViewById(R.id.servings);
         ingredientsRecyclerView = findViewById(R.id.ingredientsRecyclerView);
         stepsRecyclerView = findViewById(R.id.stepsRecyclerView);
-        
+
         // Initialize nutrition TextViews if they exist in layout
         calories = findViewById(R.id.calories);
         protein = findViewById(R.id.protein);
@@ -76,12 +79,14 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         backButton.setOnClickListener(v -> finish());
-    }    private void setupRecyclerViews() {
+    }
+
+    private void setupRecyclerViews() {
         // Ingredients RecyclerView
         ingredientsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         ingredientAdapter = new RecipeIngredientAdapter(new ArrayList<>());
         ingredientsRecyclerView.setAdapter(ingredientAdapter);
-        
+
         // Steps RecyclerView
         stepsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         stepAdapter = new RecipeStepAdapter(new ArrayList<>());
@@ -96,7 +101,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         }
 
         Log.d(TAG, "Loading recipe with ID: " + recipeId);
-        
+
         apiService.getRecipeById(recipeId).enqueue(new Callback<RecipeDetailResponse>() {
             @Override
             public void onResponse(Call<RecipeDetailResponse> call, Response<RecipeDetailResponse> response) {
@@ -160,25 +165,23 @@ public class RecipeDetailActivity extends AppCompatActivity {
         Log.d("RECIPE", "Tên món: " + recipe.getTitle());
         recipeTitle.setText(recipe.getTitle() != null ? recipe.getTitle() : "Không có tên");
         recipeDescription.setText(recipe.getDescription() != null ? recipe.getDescription() : "Không có mô tả");
-        
+
         // Time and servings
         cookingTime.setText(recipe.getTime() > 0 ? recipe.getTime() + " phút" : "Không xác định");
         servings.setText("4 người"); // Default serving size
-        
+
         // Load recipe image
         if (recipe.getImage() != null && !recipe.getImage().isEmpty()) {
-            String imageUrl = ApiClient.getImageUrl(recipe.getImage());
-            Log.d(TAG, "Loading image from URL: " + imageUrl);
             Glide.with(this)
-                .load(imageUrl)
-                .placeholder(R.drawable.ic_avatar_placeholder)
-                .error(R.drawable.ic_avatar_placeholder)
-                .into(recipeImage);
+                    .load(recipe.getImage())
+                    .placeholder(R.drawable.ic_avatar_placeholder)
+                    .error(R.drawable.ic_avatar_placeholder)
+                    .into(recipeImage);
         }
-        
+
         // Nutrition information (if TextViews exist)
         displayNutritionInfo();
-        
+
         // Load ingredients
         loadIngredientsFromApi(recipeId);
 
@@ -187,7 +190,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
             stepAdapter.updateSteps(recipe.getSteps());
         }
     }
-    
+
     private void displayNutritionInfo() {
         if (calories != null) {
             calories.setText(String.format("%.0fg", recipe.getCalories()));
@@ -205,5 +208,23 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     private void showError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    // --- Add this method to handle "Buy Now" button ---
+    private void setupBuyNowButton() {
+        Button buyNowButton = findViewById(R.id.button); // "Mua ngay" button
+        if (buyNowButton != null) {
+            buyNowButton.setOnClickListener(v -> {
+                // You need to implement getSelectedIngredients() in your adapter
+                List<RecipeIngredient> selectedIngredients = ingredientAdapter.getSelectedIngredients();
+                if (selectedIngredients == null || selectedIngredients.isEmpty()) {
+                    showError("Vui lòng chọn ít nhất một nguyên liệu để mua");
+                    return;
+                }
+                Intent intent = new Intent(RecipeDetailActivity.this, com.example.vietcuisine.ui.order.OrderActivity.class);
+                intent.putExtra("selected_ingredients", new ArrayList<>(selectedIngredients));
+                startActivity(intent);
+            });
+        }
     }
 }

@@ -44,10 +44,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private final OnPostInteractionListener listener;
     private final String userId;
 
+
     public interface OnPostInteractionListener {
         void onPostClick(Post post);
         void onLikeClick(Post post);
         void onCommentClick(Post post);
+        void onDetailClick (Post post);
     }
 
     public PostAdapter(Context context, List<Post> posts, OnPostInteractionListener listener) {
@@ -85,6 +87,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         private CommentAdapter commentAdapter;
         private List<Comment> allComments = new ArrayList<>();
         private String replyingToCommentId = null;
+        private final ImageView openDetailButton;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -176,6 +179,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         Toast.makeText(context, "Không thể gửi bình luận", Toast.LENGTH_SHORT).show();
                     }
                 });
+            });
+            openDetailButton = itemView.findViewById(R.id.openDetailButton);
+            openDetailButton.setOnClickListener(v -> {
+                int position = getBindingAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onDetailClick(posts.get(position));
+                }
             });
         }
 

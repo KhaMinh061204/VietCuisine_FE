@@ -54,6 +54,16 @@
             android:name=".ui.auth.ForgotPasswordActivity"
             android:exported="false"
             android:theme="@style/Theme.VietCuisine.NoActionBar" />
+
+        <activity
+            android:name=".ui.auth.VerifyOtpActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VietCuisine.NoActionBar" />
+
+        <activity
+            android:name=".ui.auth.ResetPasswordActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VietCuisine.NoActionBar" />
             
         <!-- Recipe Detail Activity -->
         <activity
