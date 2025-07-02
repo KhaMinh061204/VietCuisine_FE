@@ -1,4 +1,4 @@
-package com.example.vietcuisine.ui.shop;
+package com.example.vietcuisine.ui.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;

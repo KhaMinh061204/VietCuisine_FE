@@ -1,14 +1,20 @@
 package com.example.vietcuisine.ui.shop;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.vietcuisine.R;
 import com.example.vietcuisine.data.model.RecipeIngredient;
+import com.example.vietcuisine.ui.adapters.CartAdapter;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
@@ -21,6 +27,7 @@ public class CartActivity extends AppCompatActivity {
     private TextView tvTotal;
     private List<RecipeIngredient> cartItems = new ArrayList<>();
     private CartAdapter cartAdapter;
+    private MaterialButton checkoutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +40,32 @@ public class CartActivity extends AppCompatActivity {
         setupRecyclerView();
         loadCartItems();
         updateTotalPrice();
+        checkoutButton.setOnClickListener(v -> {
+            ArrayList<RecipeIngredient> selectedItems = new ArrayList<>();
+            for (RecipeIngredient item : cartItems) {
+                if (item.isSelected()) {
+                    selectedItems.add(item);
+                }
+            }
+
+            if (selectedItems.isEmpty()) {
+                Toast.makeText(this, "Vui lòng chọn ít nhất 1 nguyên liệu để thanh toán", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Intent intent = new Intent(CartActivity.this, com.example.vietcuisine.ui.order.OrderActivity.class);
+            intent.putExtra("selected_ingredients", selectedItems);
+            startActivity(intent);
+        });
+
     }
 
     private void initViews() {
         backButton = findViewById(R.id.backButton);
         cartRecyclerView = findViewById(R.id.cartRecyclerView);
+        checkoutButton = findViewById(R.id.checkoutButton);
+
+//        checkoutButton
     }
 
     private void setupClickListeners() {

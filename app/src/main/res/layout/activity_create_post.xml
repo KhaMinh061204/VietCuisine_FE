@@ -72,8 +72,8 @@
                     <ImageView
                         android:id="@+id/postImageView"
                         android:layout_width="match_parent"
+                        android:background="@drawable/edit_text_bg"
                         android:layout_height="match_parent"
-                        android:background="@color/background_color"
                         android:scaleType="centerCrop" />
 
                     <LinearLayout
@@ -119,6 +119,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_regular"
+                    android:background="@drawable/edit_text_bg"
                     android:hint="Viết mô tả bài viết..."
                     android:inputType="textMultiLine"
                     android:lines="5"

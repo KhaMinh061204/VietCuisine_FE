@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    android:fillViewport="true">    <LinearLayout
+    android:fillViewport="true">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -12,10 +13,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="24dp">
-
+            android:layout_height="wrap_content">
             <ImageButton
                 android:id="@+id/backButton"
                 android:layout_width="40dp"
@@ -25,14 +23,16 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_back"
                 android:contentDescription="Quay lại"
-                android:tint="@color/text_primary" />            <ImageView
-                android:layout_width="140dp"
-                android:layout_height="42dp"
-                android:layout_centerHorizontal="true"
-                android:contentDescription="VietCuisine Logo"
-                android:src="@drawable/ic_vietcuisine_logo" />
+                android:tint="@color/text_primary" />
 
         </RelativeLayout>
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="170dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="4dp"
+            android:contentDescription="VietCuisine Logo"
+            android:src="@drawable/vietcuisine_logo" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -72,6 +72,7 @@
                 android:id="@+id/nameInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/edit_text_bg"
                 android:fontFamily="@font/poppins_regular"
                 android:hint="Họ và tên"
                 android:inputType="textPersonName"
@@ -97,6 +98,7 @@
                 android:id="@+id/emailInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/edit_text_bg"
                 android:fontFamily="@font/poppins_regular"
                 android:hint="Email"
                 android:inputType="textEmailAddress"
@@ -123,6 +125,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_regular"
+                android:background="@drawable/edit_text_bg"
                 android:hint="Số điện thoại"
                 android:inputType="phone"
                 android:textSize="16sp" />
@@ -148,6 +151,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_regular"
+                android:background="@drawable/edit_text_bg"
                 android:hint="Giới tính"
                 android:inputType="none"
                 android:textSize="16sp" />
@@ -174,6 +178,7 @@
                 android:id="@+id/passwordInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/edit_text_bg"
                 android:fontFamily="@font/poppins_regular"
                 android:hint="Mật khẩu"
                 android:inputType="textPassword"

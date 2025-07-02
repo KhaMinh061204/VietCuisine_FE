@@ -57,14 +57,14 @@ public class ShopFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop, container, false);
-        
+
         initViews(view);
 //        setupRecyclerView();
 //        setupSearchView();
 //        setupClickListeners();
-        
+
 //        apiService = ApiClient.getClient().create(ApiService.class);
-        
+
 //        loadIngredients();
 //        updateCartBadge();
         setupTabs();
@@ -78,6 +78,17 @@ public class ShopFragment extends Fragment {
         orderAdapter = new OrderAdapter(getContext(), orderList);
         ordersRecyclerView.setAdapter(orderAdapter);
 
+        // Thêm sự kiện click cho icon cart
+        View cartIcon = view.findViewById(R.id.cartIcon);
+        if (cartIcon != null) {
+            cartIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), CartActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
 

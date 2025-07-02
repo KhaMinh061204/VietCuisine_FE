@@ -26,6 +26,7 @@ import com.example.vietcuisine.ui.fragments.ProfileFragment;
 import com.example.vietcuisine.ui.recipe.CreateRecipeActivity;
 import com.example.vietcuisine.ui.post.CreatePostActivity;
 import com.example.vietcuisine.ui.reel.CreateReelActivity;
+import com.example.vietcuisine.utils.SharedPrefsManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -152,8 +153,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isUserLoggedIn() {
-        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
-        return prefs.getBoolean("is_logged_in", false);
+        boolean isLoggedIn = SharedPrefsManager.getInstance().isLoggedIn();
+        return isLoggedIn;
     }
 
     private void redirectToLogin() {

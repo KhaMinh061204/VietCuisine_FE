@@ -106,6 +106,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Viết caption cho reel của bạn..."
+                    android:background="@drawable/edit_text_bg"
                     android:minLines="3"
                     android:maxLines="5"
                     android:gravity="start|top"

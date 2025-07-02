@@ -14,6 +14,7 @@ import android.widget.VideoView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.vietcuisine.R;
 import com.example.vietcuisine.data.model.Reel;
 
@@ -50,7 +51,7 @@ public class ReelAdapter extends RecyclerView.Adapter<ReelAdapter.ReelViewHolder
         Reel reel = reels.get(position);
         Log.d("Get position","Position"+ reel);
         holder.captionText.setText(reel.getCaption());
-        holder.authorName.setText(reel.getAuthor() != null ? reel.getAuthor().getName() : "Ẩn danh");
+        holder.authorName.setText(reel.getUserOwner()!= null ? reel.getUserOwner().getName() : "Ẩn danh");
         holder.likeCount.setText(String.valueOf(reel.getLikesCount()));
         holder.likeButton.setImageResource(reel.isLiked() ?
                 R.drawable.ic_favorite_active : R.drawable.ic_favorite_inactive);
@@ -63,6 +64,11 @@ public class ReelAdapter extends RecyclerView.Adapter<ReelAdapter.ReelViewHolder
                 holder.videoView.start();
             }
         });
+        Glide.with(context)
+                .load(reel.getUserOwner() != null ? reel.getUserOwner().getAvatar() : null)
+                .placeholder(R.drawable.ic_avatar_placeholder)
+                .into(holder.authorImage);
+
 
         holder.likeButton.setOnClickListener(v -> {
             Log.d("set like button","like button"+listener );

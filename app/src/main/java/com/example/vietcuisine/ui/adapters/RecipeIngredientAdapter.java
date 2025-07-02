@@ -97,7 +97,7 @@ public class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredie
             }
 
             holder.etQuantity.setText(String.valueOf(quantity));
-            holder.tvUnit.setText(unit);
+            holder.tvUnit.setText(ingredient.getUnit());
 
             double unitPrice = ingredient.getUnitPrice();
             holder.tvPrice.setText(String.format("%.0f VND", unitPrice * quantity));

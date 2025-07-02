@@ -2,7 +2,7 @@ package com.example.vietcuisine.data.model;
 
 public class Reel {
     private String _id;
-    private String userOwner;
+    private User userOwner;
     private String caption;
     private String video;
     private int likesCount;
@@ -15,7 +15,7 @@ public class Reel {
     // Constructors
     public Reel() {}
 
-    public Reel(String userOwner, String caption, String video) {
+    public Reel(User userOwner, String caption, String video) {
         this.userOwner = userOwner;
         this.caption = caption;
         this.video = video;
@@ -25,8 +25,8 @@ public class Reel {
     public String getId() { return _id; }
     public void setId(String id) { this._id = id; }
 
-    public String getUserOwner() { return userOwner; }
-    public void setUserOwner(String userOwner) { this.userOwner = userOwner; }
+    public User getUserOwner() { return userOwner; }
+    public void setUserOwner(User userOwner) { this.userOwner = userOwner; }
 
     public String getCaption() { return caption; }
     public void setCaption(String caption) { this.caption = caption; }
