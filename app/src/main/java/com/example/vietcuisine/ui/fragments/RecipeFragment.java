@@ -142,20 +142,50 @@ public class RecipeFragment extends Fragment {
         });
     }
 
-    private void filterRecipes(String query) {
-        filteredRecipes.clear();
-        if (query.isEmpty()) {
-            filteredRecipes.addAll(recipes);
-        } else {
-            for (Recipe recipe : recipes) {
-                if (recipe.getTitle().toLowerCase().contains(query.toLowerCase()) ||
-                    (recipe.getDescription() != null && recipe.getDescription().toLowerCase().contains(query.toLowerCase()))) {
-                    filteredRecipes.add(recipe);
+//    private void filterRecipes(String query) {
+//        filteredRecipes.clear();
+//        if (query.isEmpty()) {
+//            filteredRecipes.addAll(recipes);
+//        } else {
+//            for (Recipe recipe : recipes) {
+//                if (recipe.getTitle().toLowerCase().contains(query.toLowerCase()) ||
+//                    (recipe.getDescription() != null && recipe.getDescription().toLowerCase().contains(query.toLowerCase()))) {
+//                    filteredRecipes.add(recipe);
+//                }
+//            }
+//        }
+//        recipeAdapter.notifyDataSetChanged();
+//    }
+
+    private void filterRecipes(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            filteredRecipes.clear();
+            filteredRecipes.addAll(recipes); // Hiển thị lại toàn bộ nếu trống
+            recipeAdapter.notifyDataSetChanged();
+            return;
+        }
+
+        Call<RecipeResponse> call = apiService.searchRecipes(keyword);
+
+        call.enqueue(new Callback<RecipeResponse>() {
+            @Override
+            public void onResponse(Call<RecipeResponse> call, Response<RecipeResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getRecipes() != null) {
+                    filteredRecipes.clear();
+                    filteredRecipes.addAll(response.body().getRecipes());
+                    recipeAdapter.notifyDataSetChanged();
+                } else {
+                    showError("Không tìm thấy công thức phù hợp");
                 }
             }
-        }
-        recipeAdapter.notifyDataSetChanged();
+
+            @Override
+            public void onFailure(Call<RecipeResponse> call, Throwable t) {
+                showError("Lỗi tìm kiếm: " + t.getMessage());
+            }
+        });
     }
+
 
     private void loadCategories() {
         // Backend returns { categories: [...] } directly, matching CategoryResponse structure

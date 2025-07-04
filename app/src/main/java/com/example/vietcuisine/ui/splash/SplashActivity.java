@@ -26,6 +26,7 @@ public class SplashActivity extends AppCompatActivity {
     private void checkLoginStatus() {
         boolean isLoggedIn = SharedPrefsManager.getInstance().isLoggedIn();
         Log.d("isslogin","login"+isLoggedIn);
+//        boolean isLoggedIn=false;
         Intent intent;
         if (isLoggedIn) {
             intent = new Intent(this, MainActivity.class);

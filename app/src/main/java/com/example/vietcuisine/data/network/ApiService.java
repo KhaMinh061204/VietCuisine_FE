@@ -53,7 +53,7 @@ public interface ApiService {
     Call<RecipeResponse> getRecipesByCategory(@Path("categoryId") String categoryId);
     
     @GET("recipe/search")
-    Call<RecipeResponse> searchRecipes(@Query("q") String query);
+    Call<RecipeResponse> searchRecipes(@Query("keyword") String keyword);
     
     @GET("recipe/{id}")
     Call<RecipeDetailResponse> getRecipeById(@Path("id") String id);

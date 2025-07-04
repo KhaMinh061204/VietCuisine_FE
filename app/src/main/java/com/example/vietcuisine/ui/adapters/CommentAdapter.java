@@ -254,13 +254,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     }
 
     private void reportComment(Comment comment) {
-        SharedPreferences prefs = context.getSharedPreferences("user_session", Context.MODE_PRIVATE);
-        String token = prefs.getString("token", null);
-        if (token == null) {
-            Toast.makeText(context, "Bạn chưa đăng nhập", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         ReportRequest reportRequest = new ReportRequest("comments", comment.getId(), "Nội dung không phù hợp");
 
         ApiClient.getClient().create(ApiService.class)
